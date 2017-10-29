@@ -6,7 +6,7 @@
 #define BUILD_INFORMATION "locally built"
 #endif
 
-//#define KALEIDOSCOPE_HOSTOS_GUESSER 1
+#define KALEIDOSCOPE_HOSTOS_GUESSER 1
 /**
  * These #include directives pull in the Kaleidoscope firmware core,
  * as well as the Kaleidoscope plugins we use in the Model 01's firmware
@@ -88,7 +88,10 @@
 enum { 
       L_AE,
       L_OE,
-      L_AA
+      L_AA,
+      M_WIN,
+      M_MAC,
+      M_LNX
 };
 
 
@@ -175,7 +178,7 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
 
   [NUMPAD] =  KEYMAP_STACKED
   (___, ___, ___, ___, ___, ___, Key_LEDEffectNext,
-   ___, ___, ___, ___, ___, ___, ___,
+   M(M_LNX), M(M_WIN), M(M_MAC), ___, ___, ___, ___,
    ___, ___, ___, ___, ___, ___,
    ___, ___, ___, ___, ___, ___, ___,
    ___, ___, ___, ___,
@@ -221,6 +224,15 @@ static const kaleidoscope::ShapeShifter::dictionary_t shape_shift_dictionary[] P
     case L_AA:
       unicode(0x00c5, 0x00e5, keyState);
       break;
+    case M_LNX:
+      HostOS.os(kaleidoscope::hostos::LINUX);
+      break;
+    case M_MAC:
+      HostOS.os(kaleidoscope::hostos::OSX);
+      break;
+    case M_WIN:
+      HostOS.os(kaleidoscope::hostos::WINDOWS);
+      break;
   }
   return MACRO_NONE;
 }
@@ -259,7 +271,7 @@ static kaleidoscope::LEDSolidColor solidViolet(130, 0, 120);
 void setup() {
   // First, call Kaleidoscope's internal setup function
   Kaleidoscope.setup();
-HostOS.os(kaleidoscope::hostos::OSX);
+  //HostOS.os(kaleidoscope::hostos::OSX);
   // Next, tell Kaleidoscope which plugins you want to use.
   // The order can be important. For example, LED effects are
   // added in the order they're listed here.
