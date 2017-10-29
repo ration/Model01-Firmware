@@ -6,7 +6,7 @@
 #define BUILD_INFORMATION "locally built"
 #endif
 
-#define KALEIDOSCOPE_HOSTOS_GUESSER 1
+//#define KALEIDOSCOPE_HOSTOS_GUESSER 1
 /**
  * These #include directives pull in the Kaleidoscope firmware core,
  * as well as the Kaleidoscope plugins we use in the Model 01's firmware
@@ -150,14 +150,14 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
   (Key_Escape,   Key_1, Key_2, Key_3, Key_4, Key_5, Key_LeftBracket,
    Key_Backtick, Key_Q, Key_W, Key_E, Key_R, Key_T, Key_Tab,
    Key_PageUp,   Key_A, Key_S, Key_D, Key_F, Key_G,
-   Key_PageDown, Key_Z, Key_X, Key_C, Key_V, Key_B, OSM(LeftGui),
+   Key_PageDown, Key_Z, Key_X, Key_C, Key_V, Key_B, Key_LeftGui,
    OSM(LeftAlt), Key_Backspace, OSM(LeftShift), OSM(LeftControl),
    ShiftToLayer(FUNCTION),
 
    Key_RightBracket,  Key_6, Key_7, Key_8,     Key_9,         Key_0,         Key_KeypadNumLock,
    Key_Enter,         Key_Y, Key_U, Key_I,     Key_O,         Key_P,         Key_Equals,
                       Key_H, Key_J, Key_K,     Key_L,         Key_Semicolon, Key_Quote,
-   OSM(RightGui),     Key_N, Key_M, Key_Comma, Key_Period,    Key_Slash,     Key_Minus,
+   Key_RightGui,      Key_N, Key_M, Key_Comma, Key_Period,    Key_Slash,     Key_Minus,
    OSM(RightControl), OSM(LeftShift),  Key_Spacebar, OSM(RightAlt),
    ShiftToLayer(FUNCTION)),
 
@@ -271,7 +271,7 @@ static kaleidoscope::LEDSolidColor solidViolet(130, 0, 120);
 void setup() {
   // First, call Kaleidoscope's internal setup function
   Kaleidoscope.setup();
-  //HostOS.os(kaleidoscope::hostos::OSX);
+  HostOS.os(kaleidoscope::hostos::WINDOWS);
   // Next, tell Kaleidoscope which plugins you want to use.
   // The order can be important. For example, LED effects are
   // added in the order they're listed here.
