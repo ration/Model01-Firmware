@@ -6,7 +6,7 @@
 #define BUILD_INFORMATION "locally built"
 #endif
 
-
+//#define KALEIDOSCOPE_HOSTOS_GUESSER 1
 /**
  * These #include directives pull in the Kaleidoscope firmware core,
  * as well as the Kaleidoscope plugins we use in the Model 01's firmware
@@ -56,6 +56,15 @@
 // Support for Keyboardio's internal keyboard testing mode
 #include "Kaleidoscope-Model01-TestMode.h"
 
+// Support for swapping shifts effects on a key
+#include "Kaleidoscope-TopsyTurvy.h"
+
+// Change symbols for keys
+#include "Kaleidoscope-ShapeShifter.h"
+
+#include "Kaleidoscope-HostOS.h"
+#include "Kaleidoscope/HostOS-select.h"
+#include "Kaleidoscope-Unicode.h"
 
 /** This 'enum' is a list of all the macros used by the Model 01's firmware
   * The names aren't particularly important. What is important is that each
@@ -70,8 +79,13 @@
   * a macro key is pressed.
   */
 
-enum { MACRO_VERSION_INFO,
-       MACRO_ANY
+enum { 
+      L_AE,
+      L_OE,
+      L_AA,
+      L_AES,
+      L_OES,
+      L_AAS
      };
 
 
@@ -117,7 +131,7 @@ enum { MACRO_VERSION_INFO,
   * the numbers 0, 1 and 2.
   */
 
-enum { QWERTY, FUNCTION, NUMPAD }; // layers
+enum { QWERTY, FUNCTION, FUNCTION_SHIFTED, NUMPAD }; // layers
 
 /* This comment temporarily turns off astyle's indent enforcement
  *   so we can make the keymaps actually resemble the physical key layout better
@@ -127,37 +141,37 @@ enum { QWERTY, FUNCTION, NUMPAD }; // layers
 const Key keymaps[][ROWS][COLS] PROGMEM = {
 
   [QWERTY] = KEYMAP_STACKED
-  (___,          Key_1, Key_2, Key_3, Key_4, Key_5, Key_LEDEffectNext,
+  (___,          Key_1, Key_2, Key_3, Key_4, Key_5, Key_LeftBracket,
    Key_Backtick, Key_Q, Key_W, Key_E, Key_R, Key_T, Key_Tab,
    Key_PageUp,   Key_A, Key_S, Key_D, Key_F, Key_G,
    Key_PageDown, Key_Z, Key_X, Key_C, Key_V, Key_B, Key_Escape,
    Key_LeftControl, Key_Backspace, Key_LeftGui, Key_LeftShift,
    ShiftToLayer(FUNCTION),
 
-   M(MACRO_ANY),  Key_6, Key_7, Key_8,     Key_9,         Key_0,         Key_KeypadNumLock,
-   Key_Enter,     Key_Y, Key_U, Key_I,     Key_O,         Key_P,         Key_Equals,
-                  Key_H, Key_J, Key_K,     Key_L,         Key_Semicolon, Key_Quote,
-   Key_RightAlt,  Key_N, Key_M, Key_Comma, Key_Period,    Key_Slash,     Key_Minus,
-   Key_RightShift, Key_LeftAlt, Key_Spacebar, Key_RightControl,
+   Key_RightBracket,  Key_6, Key_7, Key_8,     Key_9,         Key_0,         Key_KeypadNumLock,
+   Key_Enter,         Key_Y, Key_U, Key_I,     Key_O,         Key_P,         Key_Equals,
+                      Key_H, Key_J, Key_K,     Key_L,         Key_Semicolon, Key_Quote,
+   Key_RightAlt,      Key_N, Key_M, Key_Comma, Key_Period,    Key_Slash,     Key_Minus,
+   Key_RightShift,    Key_LeftAlt, Key_Spacebar, Key_RightControl,
    ShiftToLayer(FUNCTION)),
 
   [FUNCTION] =  KEYMAP_STACKED
-  (___,      Key_F1,           Key_F2,      Key_F3,     Key_F4,        Key_F5,           XXX,
-   Key_Tab,  ___,              Key_mouseUp, ___,        Key_mouseBtnR, Key_mouseWarpEnd, Key_mouseWarpNE,
-   Key_Home, Key_mouseL,       Key_mouseDn, Key_mouseR, Key_mouseBtnL, Key_mouseWarpNW,
-   Key_End,  Key_PrintScreen,  Key_Insert,  ___,        Key_mouseBtnM, Key_mouseWarpSW,  Key_mouseWarpSE,
+  (___,      Key_F1,           Key_F2,          Key_F3,           Key_F4,          Key_F5,           LSHIFT(Key_9),
+   Key_Tab,  Key_mouseWarpEnd, Key_mouseWarpNW, Key_mouseUp,      Key_mouseWarpNE, Key_mouseBtnL,    Key_mouseScrollUp,
+   Key_Home, Key_Insert,       Key_mouseL,      Key_mouseDn,      Key_mouseR,      Key_mouseBtnR,
+   Key_End,  Key_PrintScreen,  Key_mouseWarpSW, Key_mouseWarpEnd, Key_mouseWarpSE, Key_mouseBtnM,    Key_mouseScrollDn,
    ___, Key_Delete, ___, ___,
    ___,
 
-   Consumer_ScanPreviousTrack, Key_F6,                 Key_F7,                   Key_F8,                   Key_F9,          Key_F10,          Key_F11,
-   Consumer_PlaySlashPause,    Consumer_ScanNextTrack, Key_LeftCurlyBracket,     Key_RightCurlyBracket,    Key_LeftBracket, Key_RightBracket, Key_F12,
-                               Key_LeftArrow,          Key_DownArrow,            Key_UpArrow,              Key_RightArrow,  ___,              ___,
-   Key_PcApplication,          Key_Mute,               Consumer_VolumeDecrement, Consumer_VolumeIncrement, ___,             Key_Backslash,    Key_Pipe,
-   ___, ___, Key_Enter, ___,
+   LSHIFT(Key_0),              Key_F6,                 Key_F7,           Key_F8,                   Key_F9,                   Key_F10,         Key_F11,
+   Consumer_PlaySlashPause,    ___,                    Key_Home,         Key_UpArrow,              Key_End,                  M(L_AE),         Key_F12,
+                               ___,                    Key_LeftArrow,    Key_DownArrow,            Key_RightArrow,           M(L_OE),         M(L_AA),
+   Key_PcApplication,          ___,                    Key_Mute,         Consumer_VolumeDecrement, Consumer_VolumeIncrement, Key_Backslash,   Key_Pipe,
+   ___, ___, Key_Enter, ShiftToLayer(FUNCTION_SHIFTED),
    ___),
 
 
-  [NUMPAD] =  KEYMAP_STACKED
+  [FUNCTION_SHIFTED] =  KEYMAP_STACKED
   (___, ___, ___, ___, ___, ___, ___,
    ___, ___, ___, ___, ___, ___, ___,
    ___, ___, ___, ___, ___, ___,
@@ -165,7 +179,23 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
    ___, ___, ___, ___,
    ___,
 
-   M(MACRO_VERSION_INFO),  ___, Key_Keypad7, Key_Keypad8,   Key_Keypad9,        Key_KeypadSubtract, ___,
+   ___, ___, ___, ___, ___, ___, ___,
+   ___, ___, ___, ___, ___, M(L_AAS), ___,
+        ___, ___, ___, ___, M(L_OES), M(L_AES),
+   ___, ___, ___, ___, ___, ___, ___,
+   ___, ___, ___, ___,
+   ___),
+
+
+  [NUMPAD] =  KEYMAP_STACKED
+  (___, ___, ___, ___, ___, ___, Key_LEDEffectNext,
+   ___, ___, ___, ___, ___, ___, ___,
+   ___, ___, ___, ___, ___, ___,
+   ___, ___, ___, ___, ___, ___, ___,
+   ___, ___, ___, ___,
+   ___,
+
+   ___,  ___, Key_Keypad7, Key_Keypad8,   Key_Keypad9,        Key_KeypadSubtract, ___,
    ___,                    ___, Key_Keypad4, Key_Keypad5,   Key_Keypad6,        Key_KeypadAdd,      ___,
                            ___, Key_Keypad1, Key_Keypad2,   Key_Keypad3,        Key_Equals,         Key_Quote,
    ___,                    ___, Key_Keypad0, Key_KeypadDot, Key_KeypadMultiply, Key_KeypadDivide,   Key_Enter,
@@ -173,13 +203,19 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
    ___)
 };
 
+// https://community.keyboard.io/t/dedicated-brackets-key/534/6
+static const kaleidoscope::ShapeShifter::dictionary_t shape_shift_dictionary[] PROGMEM = {
+  // {LSHIFT(Key_9), Key_Comma},
+  // {LSHIFT(Key_0), Key_Period},
+  {Key_NoKey, Key_NoKey},
+ };
+ 
 /* Re-enable astyle's indent enforcement */
 // *INDENT-ON*
 
 /** versionInfoMacro handles the 'firmware version info' macro
  *  When a key bound to the macro is pressed, this macro
  *  prints out the firmware build information as virtual keystrokes
- */
 
 static void versionInfoMacro(uint8_t keyState) {
   if (keyToggledOn(keyState)) {
@@ -187,6 +223,7 @@ static void versionInfoMacro(uint8_t keyState) {
     Macros.type(PSTR(BUILD_INFORMATION));
   }
 }
+ */
 
 /** anyKeyMacro is used to provide the functionality of the 'Any' key.
  *
@@ -194,7 +231,6 @@ static void versionInfoMacro(uint8_t keyState) {
  * selected. While the key is held, the function generates a synthetic
  * keypress event repeating that randomly selected key.
  *
- */
 
 static void anyKeyMacro(uint8_t keyState) {
   static Key lastKey;
@@ -204,6 +240,7 @@ static void anyKeyMacro(uint8_t keyState) {
   if (keyIsPressed(keyState))
     kaleidoscope::hid::pressKey(lastKey);
 }
+ */
 
 
 /** macroAction dispatches keymap events that are tied to a macro
@@ -218,21 +255,40 @@ static void anyKeyMacro(uint8_t keyState) {
 
  */
 
+static void unicode(uint32_t codepoint, uint8_t keyState) {
+  if (!keyToggledOn(keyState)) {
+    return;
+  }
+  Unicode.type(codepoint);
+}
+
 const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
+//  bool shifted = kaleidoscope::hid::isModifierKeyActive(Key_LeftShift)
+//              || kaleidoscope::hid::isModifierKeyActive(Key_RightShift);
+//  bool shifted = SHIFT_HELD;
+
   switch (macroIndex) {
-
-  case MACRO_VERSION_INFO:
-    versionInfoMacro(keyState);
-    break;
-
-  case MACRO_ANY:
-    anyKeyMacro(keyState);
-    break;
+    case L_AE:
+      unicode(0x00c6, keyState);
+      break;
+    case L_OE:
+      unicode(0x00d8, keyState);
+      break;
+    case L_AA:
+      unicode(0x00c5, keyState);
+      break;
+    case L_AES:
+      unicode(0x00e6, keyState);
+      break;
+    case L_OES:
+      unicode(0x00f8, keyState);
+      break;
+    case L_AAS:
+      unicode(0x00e5, keyState);
+      break;
   }
   return MACRO_NONE;
 }
-
-
 
 // These 'solid' color effect definitions define a rainbow of
 // LED color modes calibrated to draw 500mA or less on the
@@ -257,7 +313,7 @@ static kaleidoscope::LEDSolidColor solidViolet(130, 0, 120);
 void setup() {
   // First, call Kaleidoscope's internal setup function
   Kaleidoscope.setup();
-
+HostOS.os(kaleidoscope::hostos::OSX);
   // Next, tell Kaleidoscope which plugins you want to use.
   // The order can be important. For example, LED effects are
   // added in the order they're listed here.
@@ -307,7 +363,16 @@ void setup() {
     &Macros,
 
     // The MouseKeys plugin lets you add keys to your keymap which move the mouse.
-    &MouseKeys
+    &MouseKeys,
+
+    // Swap the effect of the shift key
+    &TopsyTurvy,
+
+    // Change key codes for key
+    &ShapeShifter,
+
+    // Unicode input
+    &Unicode
   );
 
   // While we hope to improve this in the future, the NumLock plugin
@@ -331,6 +396,9 @@ void setup() {
   // This avoids over-taxing devices that don't have a lot of power to share
   // with USB devices
   LEDOff.activate();
+
+  // activeate shapeshifter
+  ShapeShifter.dictionary = shape_shift_dictionary;
 }
 
 /** loop is the second of the standard Arduino sketch functions.
