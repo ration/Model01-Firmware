@@ -82,11 +82,8 @@
 enum { 
       L_AE,
       L_OE,
-      L_AA,
-      L_AES,
-      L_OES,
-      L_AAS
-     };
+      L_AA
+};
 
 
 
@@ -131,7 +128,7 @@ enum {
   * the numbers 0, 1 and 2.
   */
 
-enum { QWERTY, FUNCTION, FUNCTION_SHIFTED, NUMPAD }; // layers
+enum { QWERTY, FUNCTION, NUMPAD }; // layers
 
 /* This comment temporarily turns off astyle's indent enforcement
  *   so we can make the keymaps actually resemble the physical key layout better
@@ -152,7 +149,7 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
    Key_Enter,         Key_Y, Key_U, Key_I,     Key_O,         Key_P,         Key_Equals,
                       Key_H, Key_J, Key_K,     Key_L,         Key_Semicolon, Key_Quote,
    Key_RightAlt,      Key_N, Key_M, Key_Comma, Key_Period,    Key_Slash,     Key_Minus,
-   Key_RightShift,    Key_LeftAlt, Key_Spacebar, Key_RightControl,
+   Key_RightShift,    Key_LeftAlt,  Key_Spacebar, Key_RightControl,
    ShiftToLayer(FUNCTION)),
 
   [FUNCTION] =  KEYMAP_STACKED
@@ -163,29 +160,12 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
    ___, Key_Delete, ___, ___,
    ___,
 
-   LSHIFT(Key_0),              Key_F6,                 Key_F7,           Key_F8,                   Key_F9,                   Key_F10,         Key_F11,
-   Consumer_PlaySlashPause,    ___,                    Key_Home,         Key_UpArrow,              Key_End,                  M(L_AE),         Key_F12,
-                               ___,                    Key_LeftArrow,    Key_DownArrow,            Key_RightArrow,           M(L_OE),         M(L_AA),
-   Key_PcApplication,          ___,                    Key_Mute,         Consumer_VolumeDecrement, Consumer_VolumeIncrement, Key_Backslash,   Key_Pipe,
-   ___, ___, Key_Enter, ShiftToLayer(FUNCTION_SHIFTED),
+   LSHIFT(Key_0),              Key_F6,          Key_F7,           Key_F8,                   Key_F9,                   Key_F10,         Key_F11,
+   Consumer_PlaySlashPause,    Key_PageUp,      Key_Home,         Key_UpArrow,              Key_End,                  M(L_AE),         Key_F12,
+                               Key_PageDown,    Key_LeftArrow,    Key_DownArrow,            Key_RightArrow,           M(L_OE),         M(L_AA),
+   Key_PcApplication,          ___,             Key_Mute,         Consumer_VolumeDecrement, Consumer_VolumeIncrement, Key_Backslash,   Key_Pipe,
+   ___, ___, Key_Enter, ___,
    ___),
-
-
-  [FUNCTION_SHIFTED] =  KEYMAP_STACKED
-  (___, ___, ___, ___, ___, ___, ___,
-   ___, ___, ___, ___, ___, ___, ___,
-   ___, ___, ___, ___, ___, ___,
-   ___, ___, ___, ___, ___, ___, ___,
-   ___, ___, ___, ___,
-   ___,
-
-   ___, ___, ___, ___, ___, ___, ___,
-   ___, ___, ___, ___, ___, M(L_AAS), ___,
-        ___, ___, ___, ___, M(L_OES), M(L_AES),
-   ___, ___, ___, ___, ___, ___, ___,
-   ___, ___, ___, ___,
-   ___),
-
 
   [NUMPAD] =  KEYMAP_STACKED
   (___, ___, ___, ___, ___, ___, Key_LEDEffectNext,
@@ -213,36 +193,6 @@ static const kaleidoscope::ShapeShifter::dictionary_t shape_shift_dictionary[] P
 /* Re-enable astyle's indent enforcement */
 // *INDENT-ON*
 
-/** versionInfoMacro handles the 'firmware version info' macro
- *  When a key bound to the macro is pressed, this macro
- *  prints out the firmware build information as virtual keystrokes
-
-static void versionInfoMacro(uint8_t keyState) {
-  if (keyToggledOn(keyState)) {
-    Macros.type(PSTR("Keyboardio Model 01 - Kaleidoscope "));
-    Macros.type(PSTR(BUILD_INFORMATION));
-  }
-}
- */
-
-/** anyKeyMacro is used to provide the functionality of the 'Any' key.
- *
- * When the 'any key' macro is toggled on, a random alphanumeric key is
- * selected. While the key is held, the function generates a synthetic
- * keypress event repeating that randomly selected key.
- *
-
-static void anyKeyMacro(uint8_t keyState) {
-  static Key lastKey;
-  if (keyToggledOn(keyState))
-    lastKey.keyCode = Key_A.keyCode + (uint8_t)(millis() % 36);
-
-  if (keyIsPressed(keyState))
-    kaleidoscope::hid::pressKey(lastKey);
-}
- */
-
-
 /** macroAction dispatches keymap events that are tied to a macro
     to that macro. It takes two uint8_t parameters.
 
@@ -254,41 +204,31 @@ static void anyKeyMacro(uint8_t keyState) {
     Each 'case' statement should call out to a function to handle the macro in question.
 
  */
-
-static void unicode(uint32_t codepoint, uint8_t keyState) {
-  if (!keyToggledOn(keyState)) {
-    return;
-  }
-  Unicode.type(codepoint);
-}
-
-const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
-//  bool shifted = kaleidoscope::hid::isModifierKeyActive(Key_LeftShift)
-//              || kaleidoscope::hid::isModifierKeyActive(Key_RightShift);
-//  bool shifted = SHIFT_HELD;
-
+ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
   switch (macroIndex) {
     case L_AE:
-      unicode(0x00c6, keyState);
+      unicode(0x00c6, 0x00e6, keyState);
       break;
     case L_OE:
-      unicode(0x00d8, keyState);
+      unicode(0x00d8, 0x00f8, keyState);
       break;
     case L_AA:
-      unicode(0x00c5, keyState);
-      break;
-    case L_AES:
-      unicode(0x00e6, keyState);
-      break;
-    case L_OES:
-      unicode(0x00f8, keyState);
-      break;
-    case L_AAS:
-      unicode(0x00e5, keyState);
+      unicode(0x00c5, 0x00e5, keyState);
       break;
   }
   return MACRO_NONE;
 }
+
+static void unicode(uint32_t lower, uint32_t upper, uint8_t keyState) {
+  if (!keyToggledOn(keyState)) {
+    return;
+  }
+  bool shifted = kaleidoscope::hid::wasModifierKeyActive(Key_LeftShift)
+  || kaleidoscope::hid::wasModifierKeyActive(Key_RightShift);
+
+  Unicode.type(shifted ? lower : upper);
+}
+
 
 // These 'solid' color effect definitions define a rainbow of
 // LED color modes calibrated to draw 500mA or less on the
