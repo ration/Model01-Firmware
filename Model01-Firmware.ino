@@ -55,6 +55,9 @@
 
 // highlight active modifiers
 #include <Kaleidoscope-LED-ActiveModColor.h>
+// keep modifiers active for a moment
+#include <Kaleidoscope-OneShot.h>
+#include <kaleidoscope/hid.h>
 
 // Support for Keyboardio's internal keyboard testing mode
 #include "Kaleidoscope-Model01-TestMode.h"
@@ -145,14 +148,14 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
    Key_Backtick, Key_Q, Key_W, Key_E, Key_R, Key_T, Key_Tab,
    Key_PageUp,   Key_A, Key_S, Key_D, Key_F, Key_G,
    Key_PageDown, Key_Z, Key_X, Key_C, Key_V, Key_B, Key_LeftGui,
-   Key_LeftControl, Key_Backspace, Key_LeftGui, Key_LeftShift,
+   OSM(LeftControl), Key_Backspace, OSM(LeftGui), OSM(LeftShift),
    ShiftToLayer(FUNCTION),
 
    Key_RightBracket,  Key_6, Key_7, Key_8,     Key_9,         Key_0,         Key_KeypadNumLock,
    Key_Enter,         Key_Y, Key_U, Key_I,     Key_O,         Key_P,         Key_Equals,
                       Key_H, Key_J, Key_K,     Key_L,         Key_Semicolon, Key_Quote,
-   Key_RightAlt,      Key_N, Key_M, Key_Comma, Key_Period,    Key_Slash,     Key_Minus,
-   Key_RightShift,    Key_LeftAlt,  Key_Spacebar, Key_RightControl,
+   OSM(RightGui),     Key_N, Key_M, Key_Comma, Key_Period,    Key_Slash,     Key_Minus,
+   OSM(RightShift),OSM(LeftAlt),  Key_Spacebar, OSM(RightControl),
    ShiftToLayer(FUNCTION)),
 
   [FUNCTION] =  KEYMAP_STACKED
@@ -317,7 +320,8 @@ HostOS.os(kaleidoscope::hostos::OSX);
     // Unicode input
     &Unicode,
 
-    &ActiveModColorEffect
+    &ActiveModColorEffect,
+    &OneShot
   );
 
   // While we hope to improve this in the future, the NumLock plugin
@@ -345,7 +349,7 @@ HostOS.os(kaleidoscope::hostos::OSX);
   // activeate shapeshifter
   ShapeShifter.dictionary = shape_shift_dictionary;
 
-  ActiveModColorEffect.highlight_color = CRGB(0x00, 0xff, 0xff);  
+  ActiveModColorEffect.highlight_color = CRGB(0x66, 0x00, 0x00);  
 }
 
 /** loop is the second of the standard Arduino sketch functions.
