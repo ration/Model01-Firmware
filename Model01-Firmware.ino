@@ -53,6 +53,9 @@
 // Support for an LED mode that prints the keys you press in letters 4px high
 #include "Kaleidoscope-LED-AlphaSquare.h"
 
+// highlight active modifiers
+#include <Kaleidoscope-LED-ActiveModColor.h>
+
 // Support for Keyboardio's internal keyboard testing mode
 #include "Kaleidoscope-Model01-TestMode.h"
 
@@ -312,7 +315,9 @@ HostOS.os(kaleidoscope::hostos::OSX);
     &ShapeShifter,
 
     // Unicode input
-    &Unicode
+    &Unicode,
+
+    &ActiveModColorEffect
   );
 
   // While we hope to improve this in the future, the NumLock plugin
@@ -339,6 +344,8 @@ HostOS.os(kaleidoscope::hostos::OSX);
 
   // activeate shapeshifter
   ShapeShifter.dictionary = shape_shift_dictionary;
+
+  ActiveModColorEffect.highlight_color = CRGB(0x00, 0xff, 0xff);  
 }
 
 /** loop is the second of the standard Arduino sketch functions.
