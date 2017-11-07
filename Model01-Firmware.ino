@@ -271,7 +271,8 @@ static kaleidoscope::LEDSolidColor solidViolet(130, 0, 120);
 void setup() {
   // First, call Kaleidoscope's internal setup function
   Kaleidoscope.setup();
-  HostOS.os(kaleidoscope::hostos::WINDOWS);
+//  HostOS.os(kaleidoscope::hostos::WINDOWS);
+  HostOS.os(kaleidoscope::hostos::OSX);
   // Next, tell Kaleidoscope which plugins you want to use.
   // The order can be important. For example, LED effects are
   // added in the order they're listed here.
