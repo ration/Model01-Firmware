@@ -14,11 +14,11 @@
 // enable one shot modifiers
 // map dedicated brackets key
 // Get danish characters to work in the fn layer
+// Turn off stick one shots
 // 
 // TODO
-// Turn off stick one shots
 // Map fn + ZXCV to consumer undo, cut, copy, paste
-// Find somewhere else to warp keys .. dump middel mouse
+// Find somewhere else to warp keys .. dump middle mouse
 // Map mousekey to some of the thumb keys to enable drag and drop, which sucks with the T binding
 // Map keys to dead keys to enter é and a few other accented characters (no wincompose)
 // put <> on the brackets key
@@ -428,6 +428,12 @@ void setup() {
   ShapeShifter.dictionary = shape_shift_dictionary;
 
   ActiveModColorEffect.highlight_color = CRGB(0x66, 0x00, 0x00);  
+
+  // configure one-shot:
+  // disable sticky feature
+  OneShot.double_tap_sticky = false;
+  // shorter timer
+  OneShot.time_out = 1500;
 }
 
 /** loop is the second of the standard Arduino sketch functions.
