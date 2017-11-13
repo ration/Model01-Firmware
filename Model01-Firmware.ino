@@ -219,10 +219,12 @@ static const kaleidoscope::ShapeShifter::dictionary_t shape_shift_dictionary[] P
       unicode(0x00c6, 0x00e6, keyState);
       break;
     case L_OE:
-      unicode(0x00d8, 0x00f8, keyState);
+      // unicode(0x00d8, 0x00f8, keyState);
+      latin1(248);
       break;
     case L_AA:
-      unicode(0x00c5, 0x00e5, keyState);
+      //unicode(0x00c5, 0x00e5, keyState);
+      oe();
       break;
     case M_LNX:
       HostOS.os(kaleidoscope::hostos::LINUX);
@@ -245,6 +247,68 @@ static void unicode(uint32_t lower, uint32_t upper, uint8_t keyState) {
   || kaleidoscope::hid::wasModifierKeyActive(Key_RightShift);
 
   Unicode.type(shifted ? lower : upper);
+}
+
+static void oe() {
+  kaleidoscope::hid::pressRawKey(Key_LeftAlt);
+  kaleidoscope::hid::sendKeyboardReport();  
+  delay(5);    
+  kaleidoscope::hid::pressRawKey(Key_Keypad0);
+  kaleidoscope::hid::sendKeyboardReport();
+  kaleidoscope::hid::releaseRawKey(Key_Keypad0);
+  kaleidoscope::hid::sendKeyboardReport();    
+  delay(5);    
+  kaleidoscope::hid::pressRawKey(Key_Keypad2);
+  kaleidoscope::hid::sendKeyboardReport();
+  kaleidoscope::hid::releaseRawKey(Key_Keypad2);
+  kaleidoscope::hid::sendKeyboardReport();    
+  delay(5);    
+  kaleidoscope::hid::pressRawKey(Key_Keypad4);
+  kaleidoscope::hid::sendKeyboardReport();
+  kaleidoscope::hid::releaseRawKey(Key_Keypad4);
+  kaleidoscope::hid::sendKeyboardReport();    
+  delay(5);    
+  kaleidoscope::hid::pressRawKey(Key_Keypad8);
+  kaleidoscope::hid::sendKeyboardReport();
+  kaleidoscope::hid::releaseRawKey(Key_Keypad8);
+  kaleidoscope::hid::sendKeyboardReport();    
+  delay(5);    
+  kaleidoscope::hid::releaseRawKey(Key_LeftAlt);
+  kaleidoscope::hid::sendKeyboardReport();  
+  delay(5);    
+}
+
+static void latin1(uint8_t keycode) {
+  uint8_t digits[4];
+  digits[0] = 0; // (keycode > 999) ? keycode / 1000 % 10 : 0;
+  digits[1] = (keycode > 99) ? keycode / 100 % 10 : 0;
+  digits[2] = (keycode > 9) ? keycode / 10 % 10 : 0;
+  digits[3] = keycode % 10;
+  kaleidoscope::hid::pressRawKey(Key_LeftAlt);
+  kaleidoscope::hid::sendKeyboardReport();  
+  for (int i=0; i < 4; i++) {
+    Key key = hexToKey(digits[i]);
+    kaleidoscope::hid::pressRawKey(key);
+    kaleidoscope::hid::sendKeyboardReport();
+    kaleidoscope::hid::releaseRawKey(key);
+    kaleidoscope::hid::sendKeyboardReport();    
+    delay(5);    
+  }
+  kaleidoscope::hid::releaseRawKey(Key_LeftAlt);
+  kaleidoscope::hid::sendKeyboardReport();  
+}
+
+__attribute__((weak)) Key hexToKey(uint8_t hex) {
+  uint8_t m;
+  if (hex == 0x0) {
+    return Key_Keypad0;
+  }
+  if (hex < 0xA) {
+    m = Key_Keypad0.keyCode + (hex - 0x1);
+  } else {
+    m = Key_A.keyCode + (hex - 0xA);
+  }
+  return { m, KEY_FLAGS };
 }
 
 
