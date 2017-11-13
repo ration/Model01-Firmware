@@ -6,6 +6,26 @@
 #define BUILD_INFORMATION "locally built"
 #endif
 
+// GOAL - make a great layout for windows - since that is what I have to use a work ..
+//
+// DONE
+// remap arrows to inverted T
+// remap mouse to inverted T
+// enable one shot modifiers
+// map dedicated brackets key
+// Get danish characters to work in the fn layer
+// 
+// TODO
+// Turn off stick one shots
+// Map fn + ZXCV to consumer undo, cut, copy, paste
+// Find somewhere else to warp keys .. dump middel mouse
+// Map mousekey to some of the thumb keys to enable drag and drop, which sucks with the T binding
+// Map keys to dead keys to enter é and a few other accented characters (no wincompose)
+// put <> on the brackets key
+// maybe map esc to prog (if it doesn't brick the keyboard)
+// find some cool light effect when keyboard is turned on
+// find some subtle light effect for dayly use -- heatmap?
+
 //#define KALEIDOSCOPE_HOSTOS_GUESSER 1
 /**
  * These #include directives pull in the Kaleidoscope firmware core,
@@ -172,7 +192,7 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
    LSHIFT(Key_0),              Key_F6,          Key_F7,           Key_F8,                   Key_F9,                   Key_F10,         Key_F11,
    ___,                        Key_PageUp,      Key_Home,         Key_UpArrow,              Key_End,                  M(L_AA),         Key_F12,
                                Key_PageDown,    Key_LeftArrow,    Key_DownArrow,            Key_RightArrow,           M(L_AE),         M(L_OE),
-   Consumer_PlaySlashPause,    Consumer_ScanNextTrack,Key_Mute,  Consumer_VolumeDecrement, Consumer_VolumeIncrement, Key_Backslash,   Key_Pipe,
+   Consumer_PlaySlashPause,    Consumer_ScanNextTrack,Key_Mute,   Consumer_VolumeDecrement, Consumer_VolumeIncrement, Key_Backslash,   Key_Pipe,
    ___, ___, Key_Enter, ___,
    ___),
 
@@ -316,8 +336,8 @@ static kaleidoscope::LEDSolidColor solidViolet(130, 0, 120);
 void setup() {
   // First, call Kaleidoscope's internal setup function
   Kaleidoscope.setup();
-//  HostOS.os(kaleidoscope::hostos::WINDOWS);
-  HostOS.os(kaleidoscope::hostos::OSX);
+  HostOS.os(kaleidoscope::hostos::WINDOWS);
+//  HostOS.os(kaleidoscope::hostos::OSX);
   // Next, tell Kaleidoscope which plugins you want to use.
   // The order can be important. For example, LED effects are
   // added in the order they're listed here.
