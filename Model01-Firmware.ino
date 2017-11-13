@@ -170,8 +170,8 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
    ___,
 
    LSHIFT(Key_0),              Key_F6,          Key_F7,           Key_F8,                   Key_F9,                   Key_F10,         Key_F11,
-   ___,                        Key_PageUp,      Key_Home,         Key_UpArrow,              Key_End,                  M(L_AE),         Key_F12,
-                               Key_PageDown,    Key_LeftArrow,    Key_DownArrow,            Key_RightArrow,           M(L_OE),         M(L_AA),
+   ___,                        Key_PageUp,      Key_Home,         Key_UpArrow,              Key_End,                  M(L_AA),         Key_F12,
+                               Key_PageDown,    Key_LeftArrow,    Key_DownArrow,            Key_RightArrow,           M(L_AE),         M(L_OE),
    Consumer_PlaySlashPause,    Consumer_ScanNextTrack,Key_Mute,  Consumer_VolumeDecrement, Consumer_VolumeIncrement, Key_Backslash,   Key_Pipe,
    ___, ___, Key_Enter, ___,
    ___),
@@ -216,15 +216,13 @@ static const kaleidoscope::ShapeShifter::dictionary_t shape_shift_dictionary[] P
  const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
   switch (macroIndex) {
     case L_AE:
-      unicode(0x00c6, 0x00e6, keyState);
+      win_latin1_shift(230, 198, keyState);
       break;
     case L_OE:
-      // unicode(0x00d8, 0x00f8, keyState);
-      latin1(248);
+      win_latin1_shift(248, 216, keyState);
       break;
     case L_AA:
-      //unicode(0x00c5, 0x00e5, keyState);
-      oe();
+      win_latin1_shift(229, 197, keyState);
       break;
     case M_LNX:
       HostOS.os(kaleidoscope::hostos::LINUX);
@@ -239,76 +237,60 @@ static const kaleidoscope::ShapeShifter::dictionary_t shape_shift_dictionary[] P
   return MACRO_NONE;
 }
 
-static void unicode(uint32_t lower, uint32_t upper, uint8_t keyState) {
-  if (!keyToggledOn(keyState)) {
-    return;
-  }
+// static void unicode(uint32_t lower, uint32_t upper, uint8_t keyState) {
+//   if (!keyToggledOn(keyState)) {
+//     return;
+//   }
+//   bool shifted = kaleidoscope::hid::wasModifierKeyActive(Key_LeftShift)
+//   || kaleidoscope::hid::wasModifierKeyActive(Key_RightShift);
+
+//   Unicode.type(shifted ? lower : upper);
+// }
+
+static void win_latin1_shift(int lower, int upper, uint8_t keyState) {
   bool shifted = kaleidoscope::hid::wasModifierKeyActive(Key_LeftShift)
   || kaleidoscope::hid::wasModifierKeyActive(Key_RightShift);
 
-  Unicode.type(shifted ? lower : upper);
+  win_latin1(shifted ? upper : lower, keyState);
 }
 
-static void oe() {
-  kaleidoscope::hid::pressRawKey(Key_LeftAlt);
-  kaleidoscope::hid::sendKeyboardReport();  
-  delay(5);    
-  kaleidoscope::hid::pressRawKey(Key_Keypad0);
-  kaleidoscope::hid::sendKeyboardReport();
-  kaleidoscope::hid::releaseRawKey(Key_Keypad0);
-  kaleidoscope::hid::sendKeyboardReport();    
-  delay(5);    
-  kaleidoscope::hid::pressRawKey(Key_Keypad2);
-  kaleidoscope::hid::sendKeyboardReport();
-  kaleidoscope::hid::releaseRawKey(Key_Keypad2);
-  kaleidoscope::hid::sendKeyboardReport();    
-  delay(5);    
-  kaleidoscope::hid::pressRawKey(Key_Keypad4);
-  kaleidoscope::hid::sendKeyboardReport();
-  kaleidoscope::hid::releaseRawKey(Key_Keypad4);
-  kaleidoscope::hid::sendKeyboardReport();    
-  delay(5);    
-  kaleidoscope::hid::pressRawKey(Key_Keypad8);
-  kaleidoscope::hid::sendKeyboardReport();
-  kaleidoscope::hid::releaseRawKey(Key_Keypad8);
-  kaleidoscope::hid::sendKeyboardReport();    
-  delay(5);    
-  kaleidoscope::hid::releaseRawKey(Key_LeftAlt);
-  kaleidoscope::hid::sendKeyboardReport();  
-  delay(5);    
-}
-
-static void latin1(uint8_t keycode) {
-  uint8_t digits[4];
+static void win_latin1(int keycode, uint8_t keyState) {
+  if (!keyToggledOn(keyState)) {
+    return;
+  }
+  int digits[4];
   digits[0] = 0; // (keycode > 999) ? keycode / 1000 % 10 : 0;
   digits[1] = (keycode > 99) ? keycode / 100 % 10 : 0;
   digits[2] = (keycode > 9) ? keycode / 10 % 10 : 0;
   digits[3] = keycode % 10;
   kaleidoscope::hid::pressRawKey(Key_LeftAlt);
-  kaleidoscope::hid::sendKeyboardReport();  
+  kaleidoscope::hid::sendKeyboardReport();
   for (int i=0; i < 4; i++) {
-    Key key = hexToKey(digits[i]);
+    Key key = keypad(digits[i]);
     kaleidoscope::hid::pressRawKey(key);
     kaleidoscope::hid::sendKeyboardReport();
     kaleidoscope::hid::releaseRawKey(key);
     kaleidoscope::hid::sendKeyboardReport();    
-    delay(5);    
+    delay(1);    
   }
   kaleidoscope::hid::releaseRawKey(Key_LeftAlt);
   kaleidoscope::hid::sendKeyboardReport();  
 }
 
-__attribute__((weak)) Key hexToKey(uint8_t hex) {
-  uint8_t m;
-  if (hex == 0x0) {
-    return Key_Keypad0;
+static Key keypad(int digit) {
+  switch (digit) {
+    case 0: return Key_Keypad0;
+    case 1: return Key_Keypad1;
+    case 2: return Key_Keypad2;
+    case 3: return Key_Keypad3;
+    case 4: return Key_Keypad4;
+    case 5: return Key_Keypad5;
+    case 6: return Key_Keypad6;
+    case 7: return Key_Keypad7;
+    case 8: return Key_Keypad8;
+    case 9: return Key_Keypad9;
   }
-  if (hex < 0xA) {
-    m = Key_Keypad0.keyCode + (hex - 0x1);
-  } else {
-    m = Key_A.keyCode + (hex - 0xA);
-  }
-  return { m, KEY_FLAGS };
+  return Key_Keypad0;
 }
 
 
@@ -324,7 +306,6 @@ static kaleidoscope::LEDSolidColor solidGreen(0, 160, 0);
 static kaleidoscope::LEDSolidColor solidBlue(0, 70, 130);
 static kaleidoscope::LEDSolidColor solidIndigo(0, 0, 170);
 static kaleidoscope::LEDSolidColor solidViolet(130, 0, 120);
-
 
 
 /** The 'setup' function is one of the two standard Arduino sketch functions.
