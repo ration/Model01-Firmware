@@ -15,16 +15,20 @@
 // map dedicated brackets key
 // Get danish characters to work in the fn layer
 // Turn off stick one shots
+// Map fn + ZXCV to ctrl + undo, cut, copy, paste
+// mouse warp on E=NW/A=SW and R=NE/G=SE, Q=Quit warp
+// T is left click and fn + lower thumb keys is left/right click
+// Thumb keys moved around
+// Map mousekey to some of the thumb keys to enable drag and drop, which sucks with the T binding
 // 
 // TODO
-// Map fn + ZXCV to consumer undo, cut, copy, paste
-// Find somewhere else to warp keys .. dump middle mouse
-// Map mousekey to some of the thumb keys to enable drag and drop, which sucks with the T binding
 // Map keys to dead keys to enter é and a few other accented characters (no wincompose)
 // put <> on the brackets key
 // maybe map esc to prog (if it doesn't brick the keyboard)
 // find some cool light effect when keyboard is turned on
 // find some subtle light effect for dayly use -- heatmap?
+// might need extra layer for: euro, pound and a couple more special characters from latin1
+// test that text can be selected with arrows, ctrl and shift combined
 
 //#define KALEIDOSCOPE_HOSTOS_GUESSER 1
 /**
@@ -182,18 +186,18 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
    ShiftToLayer(FUNCTION)),
 
   [FUNCTION] =  KEYMAP_STACKED
-  (___,      Key_F1,           Key_F2,          Key_F3,           Key_F4,          Key_F5,           LSHIFT(Key_9),
+  (Key_PrintScreen, Key_F1,    Key_F2,          Key_F3,           Key_F4,          Key_F5,           LSHIFT(Key_9),
    Key_Tab,  Key_mouseWarpEnd, Key_mouseWarpNW, Key_mouseUp,      Key_mouseWarpNE, Key_mouseBtnL,    Key_mouseScrollUp,
-   Key_Home, Key_Insert,       Key_mouseL,      Key_mouseDn,      Key_mouseR,      Key_mouseBtnR,
-   Key_End,  Key_PrintScreen,  Key_mouseWarpSW, Key_mouseWarpEnd, Key_mouseWarpSE, Key_mouseBtnM,    Key_mouseScrollDn,
+   Key_Home, Key_mouseWarpSW,  Key_mouseL,      Key_mouseDn,      Key_mouseR,      Key_mouseWarpSE,
+   Key_End,  LCTRL(Key_Z),     LCTRL(Key_X),    LCTRL(Key_C),     LCTRL(Key_V),    Key_mouseBtnR,    Key_mouseScrollDn,
    ___, Key_Delete, ___, ___,
    ___,
 
    LSHIFT(Key_0),              Key_F6,          Key_F7,           Key_F8,                   Key_F9,                   Key_F10,         Key_F11,
-   ___,                        Key_PageUp,      Key_Home,         Key_UpArrow,              Key_End,                  M(L_AA),         Key_F12,
+   Key_Insert,                 Key_PageUp,      Key_Home,         Key_UpArrow,              Key_End,                  M(L_AA),         Key_F12,
                                Key_PageDown,    Key_LeftArrow,    Key_DownArrow,            Key_RightArrow,           M(L_AE),         M(L_OE),
    Consumer_PlaySlashPause,    Consumer_ScanNextTrack,Key_Mute,   Consumer_VolumeDecrement, Consumer_VolumeIncrement, Key_Backslash,   Key_Pipe,
-   ___, ___, Key_Enter, ___,
+   Key_mouseBtnR, Key_mouseBtnL, Key_Enter, ___,
    ___),
 
   [NUMPAD] =  KEYMAP_STACKED
@@ -204,10 +208,10 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
    ___, ___, ___, ___,
    ___,
 
-   ___,  ___, Key_Keypad7, Key_Keypad8,   Key_Keypad9,        Key_KeypadSubtract, ___,
-   ___,                    ___, Key_Keypad4, Key_Keypad5,   Key_Keypad6,        Key_KeypadAdd,      ___,
-                           ___, Key_Keypad1, Key_Keypad2,   Key_Keypad3,        Key_Equals,         Key_Quote,
-   ___,                    ___, Key_Keypad0, Key_KeypadDot, Key_KeypadMultiply, Key_KeypadDivide,   Key_Enter,
+   ___, ___, Key_Keypad7, Key_Keypad8,   Key_Keypad9,        Key_KeypadSubtract, ___,
+   ___, ___, Key_Keypad4, Key_Keypad5,   Key_Keypad6,        Key_KeypadAdd,      ___,
+        ___, Key_Keypad1, Key_Keypad2,   Key_Keypad3,        Key_Equals,         Key_Quote,
+   ___, Key_KeypadMultiply, Key_Keypad0, Key_Comma,     Key_Period,         Key_KeypadDivide,   Key_Enter,
    ___, ___, ___, ___,
    ___)
 };
@@ -422,7 +426,8 @@ void setup() {
   // We want to make sure that the firmware starts with LED effects off
   // This avoids over-taxing devices that don't have a lot of power to share
   // with USB devices
-  LEDOff.activate();
+  //LEDOff.activate();
+  StalkerEffect.activate();
 
   // activeate shapeshifter
   ShapeShifter.dictionary = shape_shift_dictionary;
