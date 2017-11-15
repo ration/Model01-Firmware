@@ -161,7 +161,7 @@ enum {
   * the numbers 0, 1 and 2.
   */
 
-enum { QWERTY, FUNCTION, NUMPAD }; // layers
+enum { QWERTY, ALTGR, FUNCTION, NUMPAD }; // layers
 
 /* This comment temporarily turns off astyle's indent enforcement
  *   so we can make the keymaps actually resemble the physical key layout better
@@ -174,7 +174,7 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
   (Key_Escape,   Key_1, Key_2, Key_3, Key_4, Key_5, Key_LeftBracket,
    Key_Backtick, Key_Q, Key_W, Key_E, Key_R, Key_T, Key_Tab,
    Key_PageUp,   Key_A, Key_S, Key_D, Key_F, Key_G,
-   Key_PageDown, Key_Z, Key_X, Key_C, Key_V, Key_B, Key_LeftGui,
+   Key_PageDown, Key_Z, Key_X, Key_C, Key_V, Key_B, ShiftToLayer(ALTGR),
    OSM(LeftAlt), Key_Backspace, OSM(LeftShift), OSM(LeftControl),
    ShiftToLayer(FUNCTION),
 
@@ -185,6 +185,21 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
    OSM(RightControl), OSM(LeftShift),  Key_Spacebar, OSM(RightAlt),
    ShiftToLayer(FUNCTION)),
 
+   [ALTGR] =  KEYMAP_STACKED
+   (___, ___, ___, ___, ___, ___, ___,
+    ___, ___, ___, ___, ___, ___, ___,
+    ___, ___, ___, ___, ___, ___,
+    ___, ___, ___, ___, ___, ___, ___,
+    ___, ___, ___, ___,
+    ___,
+ 
+    ___, ___, ___, ___, ___, ___, ___,
+    ___, ___, ___, ___, ___, ___, ___,
+         ___, ___, ___, ___, ___, ___,
+    ___, ___, ___, ___, ___, ___, ___,
+    ___, ___, ___, ___,
+    ___),
+    
   [FUNCTION] =  KEYMAP_STACKED
   (Key_PrintScreen, Key_F1,    Key_F2,          Key_F3,           Key_F4,          Key_F5,           LSHIFT(Key_9),
    Key_Tab,  Key_mouseWarpEnd, Key_mouseWarpNW, Key_mouseUp,      Key_mouseWarpNE, Key_mouseBtnL,    Key_mouseScrollUp,
