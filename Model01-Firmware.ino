@@ -108,6 +108,8 @@ enum {
       L_OE,
       L_AA,
       L_E_,
+      L_EURO,
+      L_POUND,
       M_WIN,
       M_MAC,
       M_LNX
@@ -181,7 +183,7 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
    ShiftToLayer(FUNCTION)),
 
    [ALTGR] =  KEYMAP_STACKED
-   (___, ___, ___, ___, ___, ___, LSHIFT(Key_Comma),
+   (___, ___, M(L_POUND), M(L_EURO), ___, ___, LSHIFT(Key_Comma),
     ___, ___, ___, M(L_E_), ___, ___, ___,
     ___, ___, ___, ___, ___, ___,
     ___, ___, ___, ___, ___, ___, ___,
@@ -190,7 +192,7 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
  
     LSHIFT(Key_Period), ___, ___, ___, ___, ___, ___,
     ___, ___, ___, ___, ___, ___, ___,
-         ___, ___, ___, ___, ___, ___,
+         ___, M(L_AE), M(L_OE), M(L_AA), ___, ___,
     ___, ___, ___, ___, ___, ___, ___,
     ___, ___, ___, ___,
     ___),
@@ -254,6 +256,12 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
     case L_E_:
       win_latin1_shift(233, 201, keyState);
       break;  
+    case L_EURO:
+      win_latin1(164, keyState);
+      break;
+    case L_POUND:
+      win_latin1(163, keyState);
+      break;      
     case M_LNX:
       HostOS.os(kaleidoscope::hostos::LINUX);
       break;
