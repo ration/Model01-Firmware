@@ -107,6 +107,7 @@ enum {
       L_AE,
       L_OE,
       L_AA,
+      L_E_,
       M_WIN,
       M_MAC,
       M_LNX
@@ -181,7 +182,7 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
 
    [ALTGR] =  KEYMAP_STACKED
    (___, ___, ___, ___, ___, ___, LSHIFT(Key_Comma),
-    ___, ___, ___, ___, ___, ___, ___,
+    ___, ___, ___, M(L_E_), ___, ___, ___,
     ___, ___, ___, ___, ___, ___,
     ___, ___, ___, ___, ___, ___, ___,
     ___, ___, ___, ___,
@@ -250,6 +251,9 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
     case L_AA:
       win_latin1_shift(229, 197, keyState);
       break;
+    case L_E_:
+      win_latin1_shift(233, 201, keyState);
+      break;  
     case M_LNX:
       HostOS.os(kaleidoscope::hostos::LINUX);
       break;
