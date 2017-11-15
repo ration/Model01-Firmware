@@ -20,13 +20,13 @@
 // T is left click and fn + lower thumb keys is left/right click
 // Thumb keys moved around
 // Map mousekey to some of the thumb keys to enable drag and drop, which sucks with the T binding
+// find some subtle light effect for dayly use -- heatmap!
 // 
 // TODO
 // Map keys to dead keys to enter é and a few other accented characters (no wincompose)
 // put <> on the brackets key
 // maybe map esc to prog (if it doesn't brick the keyboard)
 // find some cool light effect when keyboard is turned on
-// find some subtle light effect for dayly use -- heatmap?
 // might need extra layer for: euro, pound and a couple more special characters from latin1
 // test that text can be selected with arrows, ctrl and shift combined
 
@@ -86,15 +86,9 @@
 // Support for Keyboardio's internal keyboard testing mode
 #include "Kaleidoscope-Model01-TestMode.h"
 
-// Support for swapping shifts effects on a key
-#include "Kaleidoscope-TopsyTurvy.h"
-
-// Change symbols for keys
-#include "Kaleidoscope-ShapeShifter.h"
-
 #include "Kaleidoscope-HostOS.h"
 #include "Kaleidoscope/HostOS-select.h"
-#include "Kaleidoscope-Unicode.h"
+//#include "Kaleidoscope-Unicode.h"
 
 /** This 'enum' is a list of all the macros used by the Model 01's firmware
   * The names aren't particularly important. What is important is that each
@@ -186,14 +180,14 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
    ShiftToLayer(FUNCTION)),
 
    [ALTGR] =  KEYMAP_STACKED
-   (___, ___, ___, ___, ___, ___, ___,
+   (___, ___, ___, ___, ___, ___, LSHIFT(Key_Comma),
     ___, ___, ___, ___, ___, ___, ___,
     ___, ___, ___, ___, ___, ___,
     ___, ___, ___, ___, ___, ___, ___,
     ___, ___, ___, ___,
     ___,
  
-    ___, ___, ___, ___, ___, ___, ___,
+    LSHIFT(Key_Period), ___, ___, ___, ___, ___, ___,
     ___, ___, ___, ___, ___, ___, ___,
          ___, ___, ___, ___, ___, ___,
     ___, ___, ___, ___, ___, ___, ___,
@@ -230,13 +224,6 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
    ___, ___, ___, ___,
    ___)
 };
-
-// https://community.keyboard.io/t/dedicated-brackets-key/534/6
-static const kaleidoscope::ShapeShifter::dictionary_t shape_shift_dictionary[] PROGMEM = {
-  // {LSHIFT(Key_9), Key_Comma},
-  // {LSHIFT(Key_0), Key_Period},
-  {Key_NoKey, Key_NoKey},
- };
  
 /* Re-enable astyle's indent enforcement */
 // *INDENT-ON*
@@ -406,14 +393,8 @@ void setup() {
     // The MouseKeys plugin lets you add keys to your keymap which move the mouse.
     &MouseKeys,
 
-    // Swap the effect of the shift key
-    &TopsyTurvy,
-
-    // Change key codes for key
-    &ShapeShifter,
-
     // Unicode input
-    &Unicode,
+    //&Unicode,
 
     &ActiveModColorEffect,
     &OneShot
@@ -443,9 +424,6 @@ void setup() {
   //StalkerEffect.activate();
   HeatmapEffect.activate();
   
-  // activeate shapeshifter
-  ShapeShifter.dictionary = shape_shift_dictionary;
-
   ActiveModColorEffect.highlight_color = CRGB(0x66, 0x00, 0x00);  
 
   // configure one-shot:
