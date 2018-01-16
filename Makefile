@@ -5,7 +5,7 @@ UNAME_S := $(shell uname -s)
 
 ifeq ($(UNAME_S),Darwin)
 SKETCHBOOK_DIR ?= $(HOME)/Documents/Arduino
-PACKAGE_DIR ?= $(HOME)/Library/Arduino15
+PACKAGE_DIR ?= $(HOME)/Documents/Arduino/hardware/libraries
 else
 SKETCHBOOK_DIR ?= $(HOME)/Arduino
 PACKAGE_DIR ?= $(HOME)/.arduino15
