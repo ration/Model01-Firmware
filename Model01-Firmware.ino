@@ -19,15 +19,14 @@
 // mouse warp on E=NW/A=SW and R=NE/G=SE, Q=Quit warp
 // T is left click and fn + lower thumb keys is left/right click
 // Thumb keys moved around
+// prog key is mapped to esc
 // Map mousekey to some of the thumb keys to enable drag and drop, which sucks with the T binding
 // find some subtle light effect for dayly use -- heatmap!
+// wincompose for danish characters in the MACRO layer
+// tab key is dual use with CapsLock (that is the compose key in wincompose)
 // 
 // TODO
-// Map keys to dead keys to enter é and a few other accented characters (no wincompose)
 // put <> on the brackets key
-// maybe map esc to prog (if it doesn't brick the keyboard)
-// find some cool light effect when keyboard is turned on
-// might need extra layer for: euro, pound and a couple more special characters from latin1
 // test that text can be selected with arrows, ctrl and shift combined
 
 //#define KALEIDOSCOPE_HOSTOS_GUESSER 1
@@ -81,6 +80,7 @@
 #include <Kaleidoscope-LED-ActiveModColor.h>
 // keep modifiers active for a moment
 #include <Kaleidoscope-OneShot.h>
+#include <Kaleidoscope-Escape-OneShot.h>
 #include <kaleidoscope/hid.h>
 
 // Support for Keyboardio's internal keyboard testing mode
@@ -113,9 +113,7 @@ enum {
       M_WIN,
       M_MAC,
       M_LNX
-};
-
-
+      };
 
 /** The Model 01's key layouts are defined as 'keymaps'. By default, there are three
   * keymaps: The standard QWERTY keymap, the "Function layer" keymap and the "Numpad"
@@ -158,7 +156,7 @@ enum {
   * the numbers 0, 1 and 2.
   */
 
-enum { QWERTY, ALTGR, FUNCTION, NUMPAD }; // layers
+enum { QWERTY, MACRO, FUNCTION, NUMPAD }; // layers
 
 /* This comment temporarily turns off astyle's indent enforcement
  *   so we can make the keymaps actually resemble the physical key layout better
@@ -171,18 +169,18 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
   (Key_Escape,   Key_1, Key_2, Key_3, Key_4, Key_5, Key_LeftBracket,
    Key_Backtick, Key_Q, Key_W, Key_E, Key_R, Key_T, Key_Tab,
    Key_PageUp,   Key_A, Key_S, Key_D, Key_F, Key_G,
-   Key_PageDown, Key_Z, Key_X, Key_C, Key_V, Key_B, ShiftToLayer(ALTGR),
+   Key_PageDown, Key_Z, Key_X, Key_C, Key_V, Key_B, ShiftToLayer(MACRO),
    OSM(LeftAlt), Key_Backspace, OSM(LeftShift), OSM(LeftControl),
    ShiftToLayer(FUNCTION),
 
    Key_RightBracket,  Key_6, Key_7, Key_8,     Key_9,         Key_0,         Key_KeypadNumLock,
    Key_Enter,         Key_Y, Key_U, Key_I,     Key_O,         Key_P,         Key_Equals,
                       Key_H, Key_J, Key_K,     Key_L,         Key_Semicolon, Key_Quote,
-   Key_RightGui,      Key_N, Key_M, Key_Comma, Key_Period,    Key_Slash,     Key_Minus,
+   Key_LeftGui,       Key_N, Key_M, Key_Comma, Key_Period,    Key_Slash,     Key_Minus,
    OSM(RightControl), OSM(LeftShift),  Key_Spacebar, OSM(RightAlt),
    ShiftToLayer(FUNCTION)),
 
-   [ALTGR] =  KEYMAP_STACKED
+   [MACRO] =  KEYMAP_STACKED
    (___, ___, M(L_POUND), M(L_EURO), ___, ___, LSHIFT(Key_Comma),
     ___, ___, ___, M(L_E_), ___, ___, ___,
     ___, ___, ___, ___, ___, ___,
@@ -209,7 +207,7 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
    Key_Insert,                 Key_PageUp,      Key_Home,         Key_UpArrow,              Key_End,                  M(L_AA),         Key_F12,
                                Key_PageDown,    Key_LeftArrow,    Key_DownArrow,            Key_RightArrow,           M(L_AE),         M(L_OE),
    Consumer_PlaySlashPause,    Consumer_ScanNextTrack,Key_Mute,   Consumer_VolumeDecrement, Consumer_VolumeIncrement, Key_Backslash,   Key_Pipe,
-   Key_mouseBtnR, Key_mouseBtnL, Key_Enter, ___,
+   ___, ___, Key_mouseBtnL, Key_mouseBtnR,
    ___),
 
   [NUMPAD] =  KEYMAP_STACKED
@@ -221,7 +219,7 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
    ___,
 
    ___, ___, Key_Keypad7, Key_Keypad8,   Key_Keypad9,        Key_KeypadSubtract, ___,
-   ___, ___, Key_Keypad4, Key_Keypad5,   Key_Keypad6,        Key_KeypadAdd,      ___,
+   Key_Enter, ___, Key_Keypad4, Key_Keypad5,   Key_Keypad6,        Key_KeypadAdd,      ___,
         ___, Key_Keypad1, Key_Keypad2,   Key_Keypad3,        Key_Equals,         Key_Quote,
    ___, Key_KeypadMultiply, Key_Keypad0, Key_Comma,     Key_Period,         Key_KeypadDivide,   Key_Enter,
    ___, ___, ___, ___,
@@ -245,23 +243,23 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
  const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
   switch (macroIndex) {
     case L_AE:
-      win_latin1_shift(230, 198, keyState);
+      compose2(Key_A, true, Key_E, true, keyState);
       break;
     case L_OE:
-      win_latin1_shift(248, 216, keyState);
+      compose2(Key_Slash, false, Key_O, true, keyState);
       break;
     case L_AA:
-      win_latin1_shift(229, 197, keyState);
+      compose2(Key_O, false, Key_A, true, keyState);
       break;
     case L_E_:
-      win_latin1_shift(233, 201, keyState);
-      break;  
+      compose2(Key_Quote, false, Key_E, true, keyState);
+      break;
     case L_EURO:
-      win_latin1(164, keyState);
+      compose2(Key_E, false, Key_Equals, false, keyState);
       break;
     case L_POUND:
-      win_latin1(163, keyState);
-      break;      
+      compose2(Key_Minus, false, Key_L, false, keyState);
+      break;
     case M_LNX:
       HostOS.os(kaleidoscope::hostos::LINUX);
       break;
@@ -273,70 +271,43 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
       break;
   }
   return MACRO_NONE;
-}
+ }
 
-// static void unicode(uint32_t lower, uint32_t upper, uint8_t keyState) {
-//   if (!keyToggledOn(keyState)) {
-//     return;
-//   }
-//   bool shifted = kaleidoscope::hid::wasModifierKeyActive(Key_LeftShift)
-//   || kaleidoscope::hid::wasModifierKeyActive(Key_RightShift);
-
-//   Unicode.type(shifted ? lower : upper);
-// }
-
-static void win_latin1_shift(int lower, int upper, uint8_t keyState) {
-  bool shifted = kaleidoscope::hid::wasModifierKeyActive(Key_LeftShift)
-  || kaleidoscope::hid::wasModifierKeyActive(Key_RightShift);
-
-  win_latin1(shifted ? upper : lower, keyState);
-}
-
-static void win_latin1(int keycode, uint8_t keyState) {
+static void compose2(Key key1, bool shift1, Key key2, bool shift2, uint8_t keyState) {
   if (!keyToggledOn(keyState)) {
     return;
   }
-  int digits[4];
-  digits[0] = 0; // (keycode > 999) ? keycode / 1000 % 10 : 0;
-  digits[1] = (keycode > 99) ? keycode / 100 % 10 : 0;
-  digits[2] = (keycode > 9) ? keycode / 10 % 10 : 0;
-  digits[3] = keycode % 10;
-  kaleidoscope::hid::pressRawKey(Key_LeftAlt);
+    bool shifted = kaleidoscope::hid::wasModifierKeyActive(Key_LeftShift)
+  || kaleidoscope::hid::wasModifierKeyActive(Key_RightShift);
+
+  press(Key_RightAlt);
+  if (shifted && shift1) press(Key_LeftShift);
+  tap(key1);
+  if (shifted && shift1) release(Key_LeftShift);
+  if (shifted && shift2) press(Key_LeftShift);
+  tap(key2);
+  if (shifted && shift2) release(Key_LeftShift);
+  release(Key_RightAlt);
+}
+
+static void press(Key key) {
+  kaleidoscope::hid::pressKey(key);
   kaleidoscope::hid::sendKeyboardReport();
-  for (int i=0; i < 4; i++) {
-    Key key = keypad(digits[i]);
-    kaleidoscope::hid::pressRawKey(key);
-    kaleidoscope::hid::sendKeyboardReport();
-    kaleidoscope::hid::releaseRawKey(key);
-    kaleidoscope::hid::sendKeyboardReport();    
-    delay(1);    
-  }
-  kaleidoscope::hid::releaseRawKey(Key_LeftAlt);
-  kaleidoscope::hid::sendKeyboardReport();  
 }
 
-static Key keypad(int digit) {
-  switch (digit) {
-    case 0: return Key_Keypad0;
-    case 1: return Key_Keypad1;
-    case 2: return Key_Keypad2;
-    case 3: return Key_Keypad3;
-    case 4: return Key_Keypad4;
-    case 5: return Key_Keypad5;
-    case 6: return Key_Keypad6;
-    case 7: return Key_Keypad7;
-    case 8: return Key_Keypad8;
-    case 9: return Key_Keypad9;
-  }
-  return Key_Keypad0;
+static void release(Key key) {
+  kaleidoscope::hid::releaseKey(key);
+  kaleidoscope::hid::sendKeyboardReport();
 }
 
+static void tap(Key key) {
+  press(key);
+  release(key);
+}
 
 // These 'solid' color effect definitions define a rainbow of
 // LED color modes calibrated to draw 500mA or less on the
 // Keyboardio Model 01.
-
-
 static kaleidoscope::LEDSolidColor solidRed(160, 0, 0);
 static kaleidoscope::LEDSolidColor solidOrange(140, 70, 0);
 static kaleidoscope::LEDSolidColor solidYellow(130, 100, 0);
@@ -409,7 +380,8 @@ void setup() {
     //&Unicode,
 
     &ActiveModColorEffect,
-    &OneShot
+    &OneShot,
+    &EscapeOneShot
   );
 
   // While we hope to improve this in the future, the NumLock plugin
