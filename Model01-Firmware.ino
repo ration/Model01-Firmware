@@ -156,7 +156,7 @@ enum {
   * the numbers 0, 1 and 2.
   */
 
-enum { QWERTY, MACRO, FUNCTION, NUMPAD }; // layers
+enum { QWERTY, MACRO, NUMPAD, FUNCTION }; // layers
 
 /* This comment temporarily turns off astyle's indent enforcement
  *   so we can make the keymaps actually resemble the physical key layout better
@@ -194,6 +194,21 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
     ___, ___, ___, ___, ___, ___, ___,
     ___, ___, ___, ___,
     ___),
+
+  [NUMPAD] =  KEYMAP_STACKED
+  (___, ___, ___, ___, ___, ___, Key_LEDEffectNext,
+   M(M_LNX), M(M_WIN), M(M_MAC), ___, ___, ___, ___,
+   ___, ___, ___, ___, ___, ___,
+   ___, ___, ___, ___, ___, ___, ___,
+   ___, ___, ___, ___,
+   ___,
+
+   ___, ___,       Key_Keypad7, Key_Keypad8,   Key_Keypad9,        Key_KeypadSubtract, ___,
+   Key_Enter, ___, Key_Keypad4, Key_Keypad5,   Key_Keypad6,        Key_KeypadAdd,      ___,
+              ___, Key_Keypad1, Key_Keypad2,   Key_Keypad3,        Key_Equals,         Key_Quote,
+   ___, Key_KeypadMultiply, Key_Keypad0, Key_Comma, Key_Period,    Key_KeypadDivide,   Key_Enter,
+   ___, ___, ___, ___,
+   ___),
     
   [FUNCTION] =  KEYMAP_STACKED
   (Key_PrintScreen, Key_F1,    Key_F2,          Key_F3,           Key_F4,          Key_F5,           LSHIFT(Key_9),
@@ -208,21 +223,6 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
                                Key_PageDown,    Key_LeftArrow,    Key_DownArrow,            Key_RightArrow,           M(L_AE),         M(L_OE),
    Consumer_PlaySlashPause,    Consumer_ScanNextTrack,Key_Mute,   Consumer_VolumeDecrement, Consumer_VolumeIncrement, Key_Backslash,   Key_Pipe,
    ___, ___, Key_mouseBtnL, Key_mouseBtnR,
-   ___),
-
-  [NUMPAD] =  KEYMAP_STACKED
-  (___, ___, ___, ___, ___, ___, Key_LEDEffectNext,
-   M(M_LNX), M(M_WIN), M(M_MAC), ___, ___, ___, ___,
-   ___, ___, ___, ___, ___, ___,
-   ___, ___, ___, ___, ___, ___, ___,
-   ___, ___, ___, ___,
-   ___,
-
-   ___, ___, Key_Keypad7, Key_Keypad8,   Key_Keypad9,        Key_KeypadSubtract, ___,
-   Key_Enter, ___, Key_Keypad4, Key_Keypad5,   Key_Keypad6,        Key_KeypadAdd,      ___,
-        ___, Key_Keypad1, Key_Keypad2,   Key_Keypad3,        Key_Equals,         Key_Quote,
-   ___, Key_KeypadMultiply, Key_Keypad0, Key_Comma,     Key_Period,         Key_KeypadDivide,   Key_Enter,
-   ___, ___, ___, ___,
    ___)
 };
  
