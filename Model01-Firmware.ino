@@ -224,8 +224,8 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
    ___,
 
    LSHIFT(Key_0),              Key_F6,          Key_F7,           Key_F8,                   Key_F9,                   Key_F10,         Key_F11,
-   Key_Insert,                 Key_PageUp,      Key_Home,         Key_UpArrow,              Key_End,                  M(L_AA),         Key_F12,
-                               Key_PageDown,    Key_LeftArrow,    Key_DownArrow,            Key_RightArrow,           M(L_AE),         M(L_OE),
+   Key_Insert,                 Key_Home,  LCTRL(Key_LeftArrow),   Key_UpArrow,        LCTRL(Key_RightArrow),          M(L_AA),         Key_F12,
+                               Key_End,         Key_LeftArrow,    Key_DownArrow,            Key_RightArrow,           M(L_AE),         M(L_OE),
    Consumer_PlaySlashPause,    Consumer_ScanNextTrack,Key_Mute,   Consumer_VolumeDecrement, Consumer_VolumeIncrement, Key_Backslash,   Key_Pipe,
    ___, ___, Key_mouseBtnL, Key_mouseBtnR,
    ___)
