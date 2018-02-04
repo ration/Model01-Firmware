@@ -9,26 +9,20 @@
 
 // GOAL - make a great layout for windows - since that is what I have to use a work ..
 //
-// DONE
-// remap arrows to inverted T
-// remap mouse to inverted T
-// enable one shot modifiers
+// Features:
+// remap arrows to inverted T (IJKL)
+// map U/O to ctrl + left/right arrow for easier text selection
+// remap mouse to inverted T (ESDF)
+// esc locks to fn layer (ninja text editing mode!)
+// enable one shot modifiers (non sticky)
 // map dedicated brackets key
-// Get danish characters to work in the fn layer
-// Turn off stick one shots
-// Map fn + ZXCV to ctrl + undo, cut, copy, paste
-// mouse warp on E=NW/A=SW and R=NE/G=SE, Q=Quit warp
-// T is left click and fn + lower thumb keys is left/right click
-// Thumb keys moved around
+// Danish characters to fn layer (;'p)
+// Map fn + ZXCVA to ctrl + undo, cut, copy, paste, select all
+// fn + lower upper right thumb keys is left/right click
+// Thumb keys moved around (cmd, bksp, shift, ctrl) (ctrl, shift, space, alt)
 // prog key is mapped to esc
-// Map mousekey to some of the thumb keys to enable drag and drop, which sucks with the T binding
-// find some subtle light effect for dayly use -- heatmap!
-// wincompose for danish characters in the MACRO layer
-// tab key is dual use with CapsLock (that is the compose key in wincompose)
-// 
-// TODO
-// put <> on the brackets key
-// test that text can be selected with arrows, ctrl and shift combined
+// heatmap leds on by default
+// assumes WinCompose is installed with US language and RightAlt modifier selected in windows
 
 //#define KALEIDOSCOPE_HOSTOS_GUESSER 1
 /**
@@ -161,7 +155,7 @@ enum {
   * the numbers 0, 1 and 2.
   */
 
-enum { QWERTY, MACRO, NUMPAD, FUNCTION }; // layers
+enum { QWERTY, NUMPAD, FUNCTION }; // layers
 
 /* This comment temporarily turns off astyle's indent enforcement
  *   so we can make the keymaps actually resemble the physical key layout better
@@ -174,7 +168,7 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
   (Key_Escape,   Key_1, Key_2, Key_3, Key_4, Key_5, Key_LeftBracket,
    Key_Backtick, Key_Q, Key_W, Key_E, Key_R, Key_T, Key_Tab,
    Key_PageUp,   Key_A, Key_S, Key_D, Key_F, Key_G,
-   MT(RightGui, PageDown), Key_Z, Key_X, Key_C, Key_V, Key_B, ShiftToLayer(MACRO),
+   MT(RightGui, PageDown), Key_Z, Key_X, Key_C, Key_V, Key_B, LockLayer(FUNCTION),
    OSM(LeftAlt), Key_Backspace, OSM(LeftShift), OSM(LeftControl),
    ShiftToLayer(FUNCTION),
 
@@ -182,23 +176,8 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
    Key_Enter,         Key_Y, Key_U, Key_I,     Key_O,         Key_P,         Key_Equals,
                       Key_H, Key_J, Key_K,     Key_L,         Key_Semicolon, Key_Quote,
    Key_LeftGui,       Key_N, Key_M, Key_Comma, Key_Period,    Key_Slash,     Key_Minus,
-   OSM(RightControl), OSM(LeftShift),  Key_Spacebar, OSM(RightAlt),
+   OSM(RightControl), OSM(LeftShift),  Key_Spacebar, Key_RightAlt,
    ShiftToLayer(FUNCTION)),
-
-   [MACRO] =  KEYMAP_STACKED
-   (___, ___, M(L_POUND), M(L_EURO), ___, ___, LSHIFT(Key_Comma),
-    ___, ___, ___, M(L_E_), ___, ___, ___,
-    ___, ___, ___, ___, ___, ___,
-    ___, ___, ___, ___, ___, ___, ___,
-    ___, ___, ___, ___,
-    ___,
-
-    LSHIFT(Key_Period), ___, ___, ___, ___, ___, ___,
-    ___, ___, ___, ___, ___, ___, ___,
-         ___, M(L_AE), M(L_OE), M(L_AA), ___, ___,
-    ___, ___, ___, ___, ___, ___, ___,
-    ___, ___, ___, ___,
-    ___),
 
   [NUMPAD] =  KEYMAP_STACKED
   (___, ___, ___, ___, ___, ___, Key_LEDEffectNext,
@@ -209,22 +188,22 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
    ___,
 
    ___, ___,       Key_Keypad7, Key_Keypad8,   Key_Keypad9,        Key_KeypadSubtract, ___,
-   Key_Enter, ___, Key_Keypad4, Key_Keypad5,   Key_Keypad6,        Key_KeypadAdd,      ___,
+   Key_Enter, ___, Key_Keypad4, Key_Keypad5,   Key_Keypad6,        Key_KeypadAdd,      Key_PrintScreen,
               ___, Key_Keypad1, Key_Keypad2,   Key_Keypad3,        Key_Equals,         Key_Quote,
    ___, Key_KeypadMultiply, Key_Keypad0, Key_Comma, Key_Period,    Key_KeypadDivide,   Key_Enter,
    ___, ___, ___, ___,
    ___),
     
   [FUNCTION] =  KEYMAP_STACKED
-  (Key_PrintScreen, Key_F1,    Key_F2,          Key_F3,           Key_F4,          Key_F5,           LSHIFT(Key_9),
-   Key_Tab,  Key_mouseWarpEnd, Key_mouseWarpNW, Key_mouseUp,      Key_mouseWarpNE, Key_mouseBtnL,    Key_mouseScrollUp,
-   Key_Home, Key_mouseWarpSW,  Key_mouseL,      Key_mouseDn,      Key_mouseR,      Key_mouseWarpSE,
-   Key_End,  LCTRL(Key_Z),     LCTRL(Key_X),    LCTRL(Key_C),     LCTRL(Key_V),    Key_mouseBtnR,    Key_mouseScrollDn,
+  (Key_Escape,          Key_F1,           Key_F2,          Key_F3,        Key_F4,          Key_F5,           LSHIFT(Key_9),
+   Key_Insert,          Key_mouseWarpSW,  Key_mouseWarpNW, Key_mouseUp,   Key_mouseWarpNE, Key_mouseWarpSE,  Key_Tab,
+   Key_mouseScrollUp,   LCTRL(Key_A),     Key_mouseL,      Key_mouseDn,   Key_mouseR,      Key_mouseBtnL,
+   Key_mouseScrollDn,   LCTRL(Key_Z),     LCTRL(Key_X),    LCTRL(Key_C),  LCTRL(Key_V),    Key_Backspace,    ___,
    ___, Key_Delete, ___, ___,
    ___,
 
    LSHIFT(Key_0),              Key_F6,          Key_F7,           Key_F8,                   Key_F9,                   Key_F10,         Key_F11,
-   Key_Insert,                 Key_Home,  LCTRL(Key_LeftArrow),   Key_UpArrow,        LCTRL(Key_RightArrow),          M(L_AA),         Key_F12,
+   Key_Enter,                  Key_Home,  LCTRL(Key_LeftArrow),   Key_UpArrow,        LCTRL(Key_RightArrow),          M(L_AA),         Key_F12,
                                Key_End,         Key_LeftArrow,    Key_DownArrow,            Key_RightArrow,           M(L_AE),         M(L_OE),
    Consumer_PlaySlashPause,    Consumer_ScanNextTrack,Key_Mute,   Consumer_VolumeDecrement, Consumer_VolumeIncrement, Key_Backslash,   Key_Pipe,
    ___, ___, Key_mouseBtnL, Key_mouseBtnR,
@@ -425,7 +404,7 @@ void setup() {
   NumPad.numPadLayer = NUMPAD;
 
   // We configure the AlphaSquare effect to use RED letters
-  AlphaSquare.color = { 255, 0, 0 };
+  AlphaSquare.color = { 125, 0, 125 };
 
   // We set the brightness of the rainbow effects to 150 (on a scale of 0-255)
   // This draws more than 500mA, but looks much nicer than a dimmer effect
@@ -447,7 +426,7 @@ void setup() {
   //StalkerEffect.activate();
   HeatmapEffect.activate();
   
-  ActiveModColorEffect.highlight_color = CRGB(0x66, 0x00, 0x00);  
+  ActiveModColorEffect.highlight_color = CRGB(0x00, 0x00, 0x99);  
 
   // configure one-shot:
   // disable sticky feature
