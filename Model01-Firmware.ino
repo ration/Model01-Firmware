@@ -13,16 +13,23 @@
 // remap arrows to inverted T (IJKL)
 // map U/O to ctrl + left/right arrow for easier text selection
 // remap mouse to inverted T (ESDF)
-// esc locks to fn layer (ninja text editing mode!)
+// right fn locks to fn layer (ninja text editing mode!)
 // enable one shot modifiers (non sticky)
-// map dedicated brackets key
-// Danish characters to fn layer (;'p)
+// programming brackets keys:
+// esc:       [{
+// butterfly: ]}
+// led:       =+
+// any:       '"
+// Danish characters to fn layer:
+// fn + p = å
+// fn + ; = æ
+// fn + ' = ø
 // Map fn + ZXCVA to ctrl + undo, cut, copy, paste, select all
 // fn + lower upper right thumb keys is left/right click
 // Thumb keys moved around (cmd, bksp, shift, ctrl) (ctrl, shift, space, alt)
 // prog key is mapped to esc
 // heatmap leds on by default
-// assumes WinCompose is installed with US language and RightAlt modifier selected in windows
+// assumes WinCompose is installed with US language and RightAlt/AltGr modifier selected in windows
 
 //#define KALEIDOSCOPE_HOSTOS_GUESSER 1
 /**
@@ -92,8 +99,6 @@ enum {
       L_OE,
       L_AA,
       L_E_,
-      L_EURO,
-      L_POUND,
       M_WIN,
       M_MAC,
       M_LNX
@@ -150,14 +155,14 @@ enum { QWERTY, NUMPAD, FUNCTION }; // layers
 const Key keymaps[][ROWS][COLS] PROGMEM = {
 
   [QWERTY] = KEYMAP_STACKED
-  (Key_Escape,   Key_1, Key_2, Key_3, Key_4, Key_5, Key_LeftBracket,
+  (Key_Escape,   Key_1, Key_2, Key_3, Key_4, Key_5, Key_Equals,
    Key_Backtick, Key_Q, Key_W, Key_E, Key_R, Key_T, Key_Tab,
    Key_PageUp,   Key_A, Key_S, Key_D, Key_F, Key_G,
    MT(LeftGui, PageDown), Key_Z, Key_X, Key_C, Key_V, Key_B, Key_LeftBracket,
    OSM(LeftAlt), Key_Backspace, OSM(LeftShift), OSM(LeftControl),
    ShiftToLayer(FUNCTION),
 
-   Key_RightBracket,  Key_6, Key_7, Key_8,     Key_9,         Key_0,         LockLayer(NUMPAD),
+   Key_Quote,         Key_6, Key_7, Key_8,     Key_9,         Key_0,         LockLayer(NUMPAD),
    Key_Enter,         Key_Y, Key_U, Key_I,     Key_O,         Key_P,         Key_Equals,
                       Key_H, Key_J, Key_K,     Key_L,         Key_Semicolon, Key_Quote,
    Key_RightBracket,  Key_N, Key_M, Key_Comma, Key_Period,    Key_Slash,     Key_Minus,
@@ -180,14 +185,14 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
    ___),
     
   [FUNCTION] =  KEYMAP_STACKED
-  (Key_Escape,          Key_F1,           Key_F2,          Key_F3,        Key_F4,          Key_F5,           LSHIFT(Key_9),
+  (Key_Escape,          Key_F1,           Key_F2,          Key_F3,        Key_F4,          Key_F5,           ___,
    Key_Insert,          Key_mouseWarpSW,  Key_mouseWarpNW, Key_mouseUp,   Key_mouseWarpNE, Key_mouseWarpSE,  Key_Tab,
    Key_mouseScrollUp,   LCTRL(Key_A),     Key_mouseL,      Key_mouseDn,   Key_mouseR,      Key_mouseBtnL,
    Key_mouseScrollDn,   LCTRL(Key_Z),     LCTRL(Key_X),    LCTRL(Key_C),  LCTRL(Key_V),    Key_Backspace,    ___,
    ___, Key_Delete, ___, ___,
    ___,
 
-   LSHIFT(Key_0),              Key_F6,          Key_F7,           Key_F8,                   Key_F9,                   Key_F10,         Key_F11,
+   ___, Key_F6,          Key_F7,           Key_F8,          Key_F9,                   Key_F10,                  Key_F11,
    Key_Enter,                  Key_Home,  LCTRL(Key_LeftArrow),   Key_UpArrow,        LCTRL(Key_RightArrow),          M(L_AA),         Key_F12,
                                Key_End,         Key_LeftArrow,    Key_DownArrow,            Key_RightArrow,           M(L_AE),         M(L_OE),
    Consumer_PlaySlashPause,    Consumer_ScanNextTrack,Key_Mute,   Consumer_VolumeDecrement, Consumer_VolumeIncrement, Key_Backslash,   Key_Pipe,
@@ -222,12 +227,6 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
       break;
     case L_E_:
       compose2(Key_Quote, false, Key_E, true, keyState);
-      break;
-    case L_EURO:
-      compose2(Key_E, false, Key_Equals, false, keyState);
-      break;
-    case L_POUND:
-      compose2(Key_Minus, false, Key_L, false, keyState);
       break;
     case M_LNX:
       HostOS.os(kaleidoscope::hostos::LINUX);
