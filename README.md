@@ -3,6 +3,8 @@
 Modified firmware for the Keyboardio Model 01
 https://github.com/keyboardio/Model01-Firmware
 
+![layout](keyboard-layout.png)
+
 ## Goal
 Make a layout that is great for programming, for someone who is used to using a standard keyboard, with arrow keys.
 Retain the basic US layout, but add support for typing danish characters.
