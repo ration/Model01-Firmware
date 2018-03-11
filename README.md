@@ -14,10 +14,10 @@ Retain the basic US layout, but add support for typing danish characters.
 - [x] right fn locks to fn layer (ninja text editing mode!)
 - [x] enable one shot modifiers (not sticky) (https://github.com/keyboardio/Kaleidoscope-OneShot)
 - [x] programming brackets keys:
-  - esc: {|
-  - butterfly: ]}
-  - led:       =+
-  - any:       '"
+  - led =       =+
+  - any =       '"
+  - esc =       {|
+  - butterfly = ]}
   
 - [x] Danish characters to fn layer:
   - fn + p = å
@@ -48,6 +48,7 @@ Retain the basic US layout, but add support for typing danish characters.
   - [ ] Test compose key on MacOS
 - [ ] Improved programming support
   - [ ] Use TOPSY plugin to swap [/{ and '/", since the latter are used way more
+    https://github.com/keyboardio/Kaleidoscope-TopsyTurvy/issues/6
   - [ ] Move ()/<> to easier to reach positions
   - [ ] Insert key is squeezed in at fn + backtick
   - [ ] RightAlt doesn't work as a modifier key, while being mapped to Compose on windows.
