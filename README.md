@@ -18,7 +18,7 @@ Retain the basic US layout, but add support for typing danish characters.
 - [x] programming brackets keys:
   - led =       =+
   - any =       '"
-  - esc =       {|
+  - esc =       {[
   - butterfly = ]}
   
 - [x] Danish characters to fn layer:
