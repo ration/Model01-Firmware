@@ -72,7 +72,7 @@
 #include <Kaleidoscope-DualUse.h>
 
 // Support for Keyboardio's internal keyboard testing mode
-//#include "Kaleidoscope-Model01-TestMode.h"
+#include "Kaleidoscope-Model01-TestMode.h"
 
 #include "Kaleidoscope-HostOS.h"
 #include "Kaleidoscope/HostOS-select.h"
@@ -166,7 +166,7 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
    Key_Enter,         Key_Y, Key_U, Key_I,     Key_O,         Key_P,         Key_Equals,
                       Key_H, Key_J, Key_K,     Key_L,         Key_Semicolon, Key_Quote,
    Key_RightBracket,  Key_N, Key_M, Key_Comma, Key_Period,    Key_Slash,     Key_Minus,
-   OSM(RightControl), OSM(LeftShift),  Key_Spacebar, Key_RightAlt, // Key_RightAlt is not oneshot, since wincompose assumes you tap and release the wincompose key
+   OSM(RightControl), OSM(LeftShift),  Key_Spacebar, MT(LeftAlt, RightAlt), // Key_RightAlt is not oneshot, since wincompose assumes you tap and release the wincompose key
    LockLayer(FUNCTION)),
 
   [NUMPAD] =  KEYMAP_STACKED
@@ -318,7 +318,7 @@ void setup() {
     &BootGreetingEffect,
 
     // The hardware test mode, which can be invoked by tapping Prog, LED and the left Fn button at the same time.
-    //&TestMode,
+    &TestMode,
 
     // LEDControl provides support for other LED modes
     &LEDControl,
