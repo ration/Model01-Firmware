@@ -40,14 +40,13 @@ Retain the basic US layout, but add support for typing danish characters.
 
 ## Limitations
 - Hardcodes Windows as OS (trouble with autodetection)
+- If you want it to work on OS X, use the version on the 'osx' branch
 - Not tested on Linux (but should work, provided you configure the compose key)
-- Does not work well on MacOS
 
 ## TODO
-- [ ] MacOS support:
+- [X] MacOS support:
+-   [x] OSX version in on the OS X branch
   - [ ] Use OS autodetection, when it gets stable: https://github.com/keyboardio/FingerprintUSBHost/issues/5
-  - [ ] Figure out a way to change cmd/alt/ctrl around when using MacOS
-  - [ ] Test compose key on MacOS
 - [ ] Improved programming support
   - [ ] Use TOPSY plugin to swap [/{ and '/", since the latter are used way more
     https://github.com/keyboardio/Kaleidoscope-TopsyTurvy/issues/6
