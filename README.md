@@ -34,20 +34,16 @@ Retain the basic US layout, but add support for typing danish characters.
 - [x] heatmap leds on by default
 
 ## Requirements
-- [x] Assumes a US english keyboard layout
-- [x] Requires WinCompose installed on windows
-- [x] Requires compose key to be mapped to Right Alt (AltGr)
+- [x] Assumes a US english keyboard layout (OS X)
 
 ## Limitations
-- Hardcodes Windows as OS (trouble with autodetection)
-- Not tested on Linux (but should work, provided you configure the compose key)
-- Does not work well on MacOS
+- Hardcodes OS X as OS (trouble with autodetection)
+- Use the version on the master branch, if you need windows/linux support
 
 ## TODO
-- [ ] MacOS support:
+- [X] MacOS support:
+-   [ ] Update keyboard map image (it is almost the same - main difference is that cmd and ctrl are swapped)
   - [ ] Use OS autodetection, when it gets stable: https://github.com/keyboardio/FingerprintUSBHost/issues/5
-  - [ ] Figure out a way to change cmd/alt/ctrl around when using MacOS
-  - [ ] Test compose key on MacOS
 - [ ] Improved programming support
   - [ ] Use TOPSY plugin to swap [/{ and '/", since the latter are used way more
     https://github.com/keyboardio/Kaleidoscope-TopsyTurvy/issues/6
@@ -78,7 +74,7 @@ git clone --recursive https://github.com/keyboardio/Arduino-Boards.git hardware/
 ## Download the LL Data Model 01 Firmware
 
 ```sh
-git clone https://github.com/lldata/Model01-Firmware.git
+git clone -b osx https://github.com/lldata/Model01-Firmware.git
 ```
 
 # Build and flash the firmware
