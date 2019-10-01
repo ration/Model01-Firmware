@@ -18,7 +18,8 @@ Mostly Finnish (or Swedish) layout with moved commonly used Programming characte
 - [ ] Emacs usage additions  
 
 ## Requirements
-- [x] Assumes a Finnish keyboard layout
+- https://github.com/jdlien/Kaleidoscope-LEDEffect-FunctionalColor (no?)
+- https://github.com/bjc/Kaleidoscope-LayerHighlighter
 
 ## Limitations
 

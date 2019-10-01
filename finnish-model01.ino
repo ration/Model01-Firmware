@@ -33,35 +33,34 @@
 #include "Kaleidoscope-LEDControl.h"
 
 // Support for "Numpad" mode, which is mostly just the Numpad specific LED mode
-#include "Kaleidoscope-NumPad.h"
+//#include "Kaleidoscope-NumPad.h"
 
-// Support for the "Boot greeting" effect, which pulses the 'LED' button for 10s
-// when the keyboard is connected to a computer (or that computer is powered on)
-#include "Kaleidoscope-LEDEffect-BootGreeting.h"
+// // Support for the "Boot greeting" effect, which pulses the 'LED' button for 10s
+// // when the keyboard is connected to a computer (or that computer is powered on)
+// #include "Kaleidoscope-LEDEffect-BootGreeting.h"
 
-// Support for LED modes that set all LEDs to a single color
-#include "Kaleidoscope-LEDEffect-SolidColor.h"
+// // Support for an LED mode that makes all the LEDs 'breathe'
+// #include "Kaleidoscope-LEDEffect-Breathe.h"
 
-// Support for an LED mode that makes all the LEDs 'breathe'
-#include "Kaleidoscope-LEDEffect-Breathe.h"
+// // Support for an LED mode that makes a red pixel chase a blue pixel across the keyboard
+// #include "Kaleidoscope-LEDEffect-Chase.h"
 
-// Support for an LED mode that makes a red pixel chase a blue pixel across the keyboard
-#include "Kaleidoscope-LEDEffect-Chase.h"
+// // Support for LED modes that pulse the keyboard's LED in a rainbow pattern
+// #include "Kaleidoscope-LEDEffect-Rainbow.h"
 
-// Support for LED modes that pulse the keyboard's LED in a rainbow pattern
-#include "Kaleidoscope-LEDEffect-Rainbow.h"
+// // Support for an LED mode that lights up the keys as you press them
+// #include "Kaleidoscope-LED-Stalker.h"
 
-// Support for an LED mode that lights up the keys as you press them
-#include "Kaleidoscope-LED-Stalker.h"
-
-// Support for an LED mode that prints the keys you press in letters 4px high
-#include "Kaleidoscope-LED-AlphaSquare.h"
+// // Support for an LED mode that prints the keys you press in letters 4px high
+// #include "Kaleidoscope-LED-AlphaSquare.h"
 
 // Support for shared palettes for other plugins, like Colormap below
 #include "Kaleidoscope-LED-Palette-Theme.h"
 
 // Support for an LED mode that lets one configure per-layer color maps
 #include "Kaleidoscope-Colormap.h"
+
+#include <Kaleidoscope-LEDEffect-FunctionalColor.h>
 
 // Support for Keyboardio's internal keyboard testing mode
 #include "Kaleidoscope-HardwareTestMode.h"
@@ -95,8 +94,8 @@
   * a macro key is pressed.
   */
 
-enum { MACRO_VERSION_INFO, MACRO_ANY, L_AE, L_OE
-     };
+enum { MACRO_VERSION_INFO, MACRO_ANY, L_AE, L_OE,
+MACRO_FCUP, MACRO_FCDOWN};
 
 
 
@@ -200,14 +199,17 @@ KEYMAPS(
    ___, Key_Delete, ___, ___,
    ___,
 
-   Consumer_ScanPreviousTrack, Key_F6,                 Key_F7,          Key_F8,                   Key_F9,          Key_F10,          Key_F11,
+   LockLayer(FUNCTION), Key_F6,                 Key_F7,          Key_F8,                   Key_F9,          Key_F10,          Key_F11,
    Consumer_PlaySlashPause,    Key_PageUp,              ___,            Key_UpArrow,              ___,             ___,              Key_F12,
                                Key_PageDown,          Key_LeftArrow,    Key_DownArrow,            Key_RightArrow,  ___,              ___,
    Key_Semicolon,          Consumer_Mute,         Consumer_VolumeDecrement, Consumer_VolumeIncrement, ___,             Key_Backslash,    Key_Pipe,
 
    ___, ___, Key_Enter, ___,
    ___)
-) // KEYMAPS(
+)
+
+
+  // KEYMAP(
 
 /* Re-enable astyle's indent enforcement */
 // *INDENT-ON*
@@ -268,9 +270,15 @@ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
   case MACRO_VERSION_INFO:
     versionInfoMacro(keyState);
     break;
-
   case MACRO_ANY:
     anyKeyMacro(keyState);
+    break;
+  case MACRO_FCUP:
+    FunctionalColor::brightnessUp(keyState);
+    break;
+  
+  case MACRO_FCDOWN:
+    FunctionalColor::brightnessDown(keyState);
     break;
   }
   return MACRO_NONE;
@@ -280,7 +288,7 @@ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
 static void compose2(Key key1, bool shift1, Key key2, bool shift2, uint8_t keyState) {
   if (!keyToggledOn(keyState)) {
     return;
-  }
+ }
     bool shifted = kaleidoscope::hid::wasModifierKeyActive(Key_LeftShift)
   || kaleidoscope::hid::wasModifierKeyActive(Key_RightShift);
 
@@ -308,23 +316,164 @@ static void tap(Key key) {
   release(key);
 }
 
+// BEGIN FunctionalColor
 
-// These 'solid' color effect definitions define a rainbow of
-// LED color modes calibrated to draw 500mA or less on the
-// Keyboardio Model 01.
+using namespace kaleidoscope::plugin::LEDFunctionalColor;
 
 
-static kaleidoscope::plugin::LEDSolidColor solidRed(160, 0, 0);
-static kaleidoscope::plugin::LEDSolidColor solidOrange(140, 70, 0);
-static kaleidoscope::plugin::LEDSolidColor solidYellow(130, 100, 0);
-static kaleidoscope::plugin::LEDSolidColor solidGreen(0, 160, 0);
-static kaleidoscope::plugin::LEDSolidColor solidBlue(0, 70, 130);
-static kaleidoscope::plugin::LEDSolidColor solidIndigo(0, 0, 170);
-static kaleidoscope::plugin::LEDSolidColor solidViolet(130, 0, 120);
+// Note: FunctionalColor allows you to use CSS color names (in lowercase)
+// You can also control the brightness from 0-255 by using a dim() function on the color.
 
-/** toggleLedsOnSuspendResume toggles the LEDs off when the host goes to sleep,
- * and turns them back on when it wakes up.
- */
+// Use color override Macros to set the color of specific keys--even those not customizable in a ColorMap struct
+FC_START_COLOR_LIST(customColors)
+ // Use any number of FCGROUPKEYs above a FC_KEYCOLOR to set several keys to the same color
+ FC_GROUPKEY(Key_A)
+ FC_KEYCOLOR(Key_Semicolon, orange)
+ FC_GROUPKEY(Key_S)
+ FC_KEYCOLOR(Key_L, yellow)
+ FC_GROUPKEY(Key_D)
+ FC_KEYCOLOR(Key_K, lime)
+ FC_GROUPKEY(Key_F)
+ FC_KEYCOLOR(Key_J, aqua)
+ //FC_NOCOLOR makes a key not change color, as if "transparent".
+ // In this example The uparrow key will not change the key color, even when on the active layer.
+ FC_NOCOLOR(Key_UpArrow)
+
+ // This shows how you can set the color of custom macros
+ FC_GROUPKEY(M(MACRO_FCUP))
+ FC_KEYCOLOR(M(MACRO_FCDOWN), cyan)
+FC_END_COLOR_LIST
+
+
+// An example showing how to make a simple configuration with no theme and a default color of pink.
+// This is used in funColorSimpleColors
+FC_START_COLOR_LIST(simpleColors)
+ // Make homing keys yellow
+ FC_GROUPKEY(Key_A)
+ FC_GROUPKEY(Key_F)
+ FC_GROUPKEY(Key_J)
+ FC_KEYCOLOR(Key_Semicolon, yellow)
+ // Brightness macros
+ FC_GROUPKEY(M(MACRO_FCUP))
+ FC_KEYCOLOR(M(MACRO_FCDOWN), cyan)
+// If you want to specify a default color and you are not using a theme,
+// use FC_END_COLOR_LIST_DEFAULT and specify the default color for all keys not specified above.
+FC_END_COLOR_LIST_DEFAULT(pink)
+
+// There are several ways you can make FunctionalColor instances.
+// Some are commented out to save a few bytes of memory in the default jam-packed configuration.
+
+// No arguments are needed to use the default theme and brightness.
+FunctionalColor funColorDefault;
+
+//You can specify an optional brightness 0-255, and an optional colorList can follow.
+FunctionalColor funColorMono(200);
+
+//You can specify only a color override list as shown above beginning with FC_START_COLOR_LIST(customColors)
+FunctionalColor funColorCustomColors(FC_COLOR_LIST(customColors));
+
+//You can also specify a colorList with the brightness after.
+FunctionalColor funCustomColorsBright(FC_COLOR_LIST(customColors), 255);
+
+// The last two examples will use custom themes - these are applied later in the setup() part of this .ino
+// Look near the bottom of this file to see how this is done.
+FunctionalColor funColorMyTheme;
+// Note that you can combine custom color overrides with a custom theme, demonstrated in funColorGreen.
+// adding ", 220, false" after the FC_COLOR_LIST saves about 32 bytes here but it's not necessary.
+FunctionalColor funColorGreen(FC_COLOR_LIST(customColors));
+
+// This is how you explicitly specify NOT to use a theme - add "false" after the brightness
+// to save memory and make a simple configuration.
+FunctionalColor funColorSimpleColors(FC_COLOR_LIST(simpleColors), 220, false);
+
+// If you're making a custom theme to be applied later, you can also avoid specifying a theme
+// (to save memory) without specifying a colorList with the following:
+FunctionalColor funColorNoTheme(220, false);
+
+
+//To create a theme, make a subclass of one of the themes in FunctionalColor.
+//They are colorMap, colorMapDefault, colorMapMono, colorMapDuo, colorMapFruit, etc.
+//This example makes a few tweaks to colorMapMono that customize specific modifier keys
+struct myTheme: public colorMapMono {
+  FC_MAP_COLOR(shift, darkseagreen)
+  FC_MAP_COLOR(control, skyblue)
+  FC_MAP_COLOR(alt, forestgreen)
+  FC_MAP_COLOR(gui, pink)
+  //You can also set something to "nocolor" which will avoid coloring a set of keys
+  // if they already are part of another larger group - ie set shift to nocolor and
+  // shiftkeys will inherit the color assigned to modifier
+  // FC_MAP_COLOR(shift, nocolor);
+};
+
+
+// For reference, this example theme struct shows the full list of properties you can set
+// in case you want to define a completely custom theme. In practice you can
+// just subclass one you like and change only the elements you want to modify
+// with the FC_MAP_COLOR() function.
+struct colorMapGreen: public colorMap {
+  // baseColor is used with just changes in brightness for a largely monochromatic theme.
+  // You can change baseColor from green to change all these colors at once.
+  FC_MAP_COLOR(baseColor, green)
+
+  // defaultColor is used when there is no color defined for a key.
+  // This is the only way to color "prog" if you don't assign a function to it.
+  // When referring to a previously defined color that was defined with FC_MAP_COLOR
+  // (including in base color map classes), you must use the FC_REF_MAP_COLOR() function.
+  FC_MAP_COLOR(defaultColor, dim(FC_REF_MAP_COLOR(baseColor), 100))
+
+  // shift, control, gui, and alt can all be colored by "modifier" if nocolor is set here.
+  FC_MAP_COLOR(shift, nocolor)
+  FC_MAP_COLOR(control, nocolor)
+  // Windows Logo or, on macOS, command keys 
+  FC_MAP_COLOR(gui, nocolor)
+  FC_MAP_COLOR(alt, nocolor)
+  
+  FC_MAP_COLOR(modifier, dim(FC_REF_MAP_COLOR(baseColor), 130))
+  FC_MAP_COLOR(alpha, dim(FC_REF_MAP_COLOR(baseColor), 80))
+  FC_MAP_COLOR(number, dim(FC_REF_MAP_COLOR(baseColor), 100))
+  FC_MAP_COLOR(punctuation, dim(FC_REF_MAP_COLOR(baseColor), 120))
+
+  // F1-F12 and F13-F24
+  FC_MAP_COLOR(function, dim(FC_REF_MAP_COLOR(baseColor), 150))
+  
+  // Page Up, Page Down, Home, End, Insert, and Delete (if del has nocolor)
+  FC_MAP_COLOR(navigation, dim(FC_REF_MAP_COLOR(baseColor), 180))
+  
+  // Print Screen, Pause/Break, and Scroll Lock keys (brightness on Macs)
+  FC_MAP_COLOR(system, dim(FC_REF_MAP_COLOR(baseColor), 50))
+  
+  FC_MAP_COLOR(arrow, dim(FC_REF_MAP_COLOR(baseColor), 250))
+  FC_MAP_COLOR(keypad, dim(FC_REF_MAP_COLOR(baseColor), 230))
+
+  // Includes play/pause, next/prev, volume control, mute, etc.
+  FC_MAP_COLOR(media, dim(FC_REF_MAP_COLOR(baseColor), 250))
+  
+  FC_MAP_COLOR(mouseWheel, nocolor)
+  FC_MAP_COLOR(mouseButton,nocolor)
+  FC_MAP_COLOR(mouseWarp, nocolor)
+  FC_MAP_COLOR(mouseMove, nocolor)
+  // mouse includes the four above groups if nocolor is set for those
+  FC_MAP_COLOR(mouse, dim(FC_REF_MAP_COLOR(baseColor), 220))
+  FC_MAP_COLOR(space, dim(FC_REF_MAP_COLOR(baseColor), 100))
+  FC_MAP_COLOR(tab, dim(FC_REF_MAP_COLOR(baseColor), 100))
+  FC_MAP_COLOR(enter, dim(FC_REF_MAP_COLOR(baseColor), 255))
+  FC_MAP_COLOR(backspace, dim(FC_REF_MAP_COLOR(baseColor), 100))
+  FC_MAP_COLOR(escape, dim(FC_REF_MAP_COLOR(baseColor), 100))
+  FC_MAP_COLOR(del, dim(FC_REF_MAP_COLOR(baseColor), 255))
+
+  //fn will work properly if your FUNCTION layer is between layers 1-3
+  FC_MAP_COLOR(fn, dim(FC_REF_MAP_COLOR(baseColor), 255))
+  
+  //NumLock and other layer locks
+  FC_MAP_COLOR(lock, dim(FC_REF_MAP_COLOR(baseColor), 255))
+  FC_MAP_COLOR(LEDEffectNext, dim(FC_REF_MAP_COLOR(baseColor), 255))
+};
+
+// END FunctionalColor
+
+ /** toggleLedsOnSuspendResume toggles the LEDs off when the host goes to sleep,
+  * and turns them back on when it wakes up.
+  */
 void toggleLedsOnSuspendResume(kaleidoscope::plugin::HostPowerManagement::Event event) {
   switch (event) {
   case kaleidoscope::plugin::HostPowerManagement::Suspend:
@@ -338,9 +487,10 @@ void toggleLedsOnSuspendResume(kaleidoscope::plugin::HostPowerManagement::Event 
     break;
   case kaleidoscope::plugin::HostPowerManagement::Sleep:
     break;
-  }
+}
 }
 
+  
 /** hostPowerManagementEventHandler dispatches power management events (suspend,
  * resume, and sleep) to other functions that perform action based on these
  * events.
@@ -361,7 +511,8 @@ enum {
   // mode.
   COMBO_TOGGLE_NKRO_MODE,
   // Enter test mode
-  COMBO_ENTER_TEST_MODE
+  COMBO_ENTER_TEST_MODE,
+  COMBO_LOCK_FUNCTION
 };
 
 /** Wrappers, to be used by MagicCombo. **/
@@ -382,17 +533,30 @@ static void enterHardwareTestMode(uint8_t combo_index) {
 }
 
 
+static void lockFunction(uint8_t combo_index) {
+  if (!Layer.isActive(FUNCTION)) {
+    Layer.activate(FUNCTION);
+  } else {
+    Layer.deactivate(FUNCTION);
+  }
+}
+
 /** Magic combo list, a list of key combo and action pairs the firmware should
  * recognise.
  */
-USE_MAGIC_COMBOS({.action = toggleKeyboardProtocol,
-                  // Left Fn + Esc + Shift
-                  .keys = { R3C6, R2C6, R3C7 }
-}, {
-  .action = enterHardwareTestMode,
-  // Left Fn + Prog + LED
-  .keys = { R3C6, R0C0, R0C6 }
-});
+USE_MAGIC_COMBOS(
+		 [COMBO_TOGGLE_NKRO_MODE] = {.action = toggleKeyboardProtocol,
+					     // Left Fn + Esc + Shift
+					     .keys = { R3C6, R2C6, R3C7 }
+		 }, [COMBO_ENTER_TEST_MODE] = {
+					       .action = enterHardwareTestMode,
+					       // Left Fn + Prog + LED
+					       .keys = { R3C6, R0C0, R0C6 }
+		 }, [COMBO_LOCK_FUNCTION] = {
+					     .action = lockFunction,
+					     // Left Fn + Right Fn
+					     .keys = {R0C7, R0C8}
+  });
 
 // First, tell Kaleidoscope which plugins you want to use.
 // The order can be important. For example, LED effects are
@@ -418,7 +582,7 @@ KALEIDOSCOPE_INIT_PLUGINS(
 
   // The boot greeting effect pulses the LED button for 10 seconds after the
   // keyboard is first connected
-  BootGreetingEffect,
+  //  BootGreetingEffect,
 
   // The hardware test mode, which can be invoked by tapping Prog, LED and the
   // left Fn button at the same time.
@@ -428,43 +592,53 @@ KALEIDOSCOPE_INIT_PLUGINS(
   LEDControl,
 
   // We start with the LED effect that turns off all the LEDs.
-  LEDOff,
+  //  LEDOff,
 
+// All FunctionalColor instances go here in the order you want them in
+  funColorDefault,
+  funColorMono,
+  funColorCustomColors,
+  funCustomColorsBright,
+  funColorMyTheme,
+  funColorGreen,
+  funColorSimpleColors,
+  funColorNoTheme,
+  
   // The rainbow effect changes the color of all of the keyboard's keys at the same time
   // running through all the colors of the rainbow.
-  LEDRainbowEffect,
+  //  LEDRainbowEffect,
 
   // The rainbow wave effect lights up your keyboard with all the colors of a rainbow
   // and slowly moves the rainbow across your keyboard
-  LEDRainbowWaveEffect,
+  //  LEDRainbowWaveEffect,
 
   // The chase effect follows the adventure of a blue pixel which chases a red pixel across
   // your keyboard. Spoiler: the blue pixel never catches the red pixel
-  LEDChaseEffect,
+  //  LEDChaseEffect,
 
   // These static effects turn your keyboard's LEDs a variety of colors
-  solidRed, solidOrange, solidYellow, solidGreen, solidBlue, solidIndigo, solidViolet,
+  //  solidRed, solidOrange, solidYellow, solidGreen, solidBlue, solidIndigo, solidViolet,
 
   // The breathe effect slowly pulses all of the LEDs on your keyboard
-  LEDBreatheEffect,
+  //  LEDBreatheEffect,
 
   // The AlphaSquare effect prints each character you type, using your
   // keyboard's LEDs as a display
-  AlphaSquareEffect,
+  //  AlphaSquareEffect,
 
   // The stalker effect lights up the keys you've pressed recently
-  StalkerEffect,
+  //  StalkerEffect,
 
   // The LED Palette Theme plugin provides a shared palette for other plugins,
   // like Colormap below
-  LEDPaletteTheme,
+  //  LEDPaletteTheme,
 
   // The Colormap effect makes it possible to set up per-layer colormaps
-  ColormapEffect,
+  //  ColormapEffect,
 
   // The numpad plugin is responsible for lighting up the 'numpad' mode
   // with a custom LED effect
-  NumPad,
+  //  NumPad,
 
   // The macros plugin adds support for macros
   Macros,
@@ -480,7 +654,7 @@ KALEIDOSCOPE_INIT_PLUGINS(
   // actions - a bit like Macros, but triggered by pressing multiple keys at the
   // same time.
   MagicCombo,
-
+  
   // The USBQuirks plugin lets you do some things with USB that we aren't
   // comfortable - or able - to do automatically, but can be useful
   // nevertheless. Such as toggling the key report protocol between Boot (used
@@ -503,15 +677,15 @@ void setup() {
 
   // While we hope to improve this in the future, the NumPad plugin
   // needs to be explicitly told which keymap layer is your numpad layer
-  NumPad.numPadLayer = NUMPAD;
+  //NumPad.numPadLayer = NUMPAD;
 
   // We configure the AlphaSquare effect to use RED letters
-  AlphaSquare.color = CRGB(255, 0, 0);
+  //AlphaSquare.color = CRGB(255, 0, 0);
 
   // We set the brightness of the rainbow effects to 150 (on a scale of 0-255)
   // This draws more than 500mA, but looks much nicer than a dimmer effect
-  LEDRainbowEffect.brightness(150);
-  LEDRainbowWaveEffect.brightness(150);
+  //LEDRainbowEffect.brightness(150);
+  //LEDRainbowWaveEffect.brightness(150);
 
   // Set the action key the test mode should listen for to Left Fn
   HardwareTestMode.setActionKey(R3C6);
@@ -519,12 +693,12 @@ void setup() {
   // The LED Stalker mode has a few effects. The one we like is called
   // 'BlazingTrail'. For details on other options, see
   // https://github.com/keyboardio/Kaleidoscope/blob/master/doc/plugin/LED-Stalker.md
-  StalkerEffect.variant = STALKER(BlazingTrail);
+  //StalkerEffect.variant = STALKER(BlazingTrail);
 
   // We want to make sure that the firmware starts with LED effects off
   // This avoids over-taxing devices that don't have a lot of power to share
   // with USB devices
-  LEDOff.activate();
+  //  LEDOff.activate();
 
   // To make the keymap editable without flashing new firmware, we store
   // additional layers in EEPROM. For now, we reserve space for five layers. If
@@ -533,10 +707,25 @@ void setup() {
   // `keymap.onlyCustom` command to use EEPROM layers only.
   EEPROMKeymap.setup(5);
 
+  FC_SET_THEME(funColorMono, kaleidoscope::plugin::LEDFunctionalColor::colorMapMono);
+  // The themes are: colorMap, colorMapDefault, colorMapFruit, colorMapMono, colorMapDuo,
+  // colorMapPrincess, colorMapSea, colorMapFlower, colorMapKids, colorMapRedWhiteBlue.
+
+  // This applies our custom themes to funColorMyTheme, funColorGreen, and funcolorNoTheme
+  FC_SET_THEME(funColorMyTheme, myTheme);
+  FC_SET_THEME(funColorGreen, colorMapGreen);
+  // When a FunctionalColors instance is instantiated with no theme, one can be added later
+  FC_SET_THEME(funColorNoTheme, colorMapGreen);
+  
   // We need to tell the Colormap plugin how many layers we want to have custom
   // maps for. To make things simple, we set it to five layers, which is how
   // many editable layers we have (see above).
-  ColormapEffect.max_layers(5);
+  //ColormapEffect.max_layers(5);
+  //ColormapEffect.activate();
+
+  MouseKeys.speed = 15;
+  MouseKeys.speedDelay = 1;
+
 }
 
 /** loop is the second of the standard Arduino sketch functions.
