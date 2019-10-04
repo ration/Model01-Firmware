@@ -192,16 +192,16 @@ KEYMAPS(
 
   [FUNCTION] =  KEYMAP_STACKED
   (Key_LEDEffectNext,      Key_F1,           Key_F2,      Key_F3,     Key_F4,        Key_F5,           Key_CapsLock,
-   Key_Tab,  ___,              Key_mouseUp, ___,        Key_mouseBtnR, Key_mouseWarpEnd, Key_mouseWarpNE,
-   Key_Home, Key_mouseL,       Key_mouseDn, Key_mouseR, Key_mouseBtnL, Key_mouseWarpNW,
-   Key_End,  Key_PrintScreen,  Key_Insert,  ___,        Key_mouseBtnM, Key_mouseWarpSW,  Key_mouseWarpSE,
+   Key_Tab,  ___,          ___,              Key_mouseUp, Key_mouseScrollUp, Key_mouseBtnR,___,  
+   Key_Home, ___, Key_mouseL,       Key_mouseDn, Key_mouseR,  Key_mouseBtnL,
+   Key_End,  Key_PrintScreen,  Key_Insert,  ___,        Key_mouseScrollDn, Key_mouseBtnM,___,   
 
    ___, Key_Delete, ___, ___,
    ___,
 
-   LockLayer(FUNCTION), Key_F6,                 Key_F7,          Key_F8,                   Key_F9,          Key_F10,          Key_F11,
-   Consumer_PlaySlashPause,    Key_PageUp,              ___,            Key_UpArrow,              ___,             ___,              Key_F12,
-                               Key_PageDown,          Key_LeftArrow,    Key_DownArrow,            Key_RightArrow,  ___,              ___,
+   Consumer_PlaySlashPause, Key_F6,                 Key_F7,          Key_F8,                   Key_F9,          Key_F10,          Key_F11,
+   ___,    Key_PageUp,            ___,              Key_UpArrow,              ___,             ___,              Key_F12,
+           Key_PageDown,          Key_LeftArrow,    Key_DownArrow,            Key_RightArrow,  ___,              ___,
    Key_Semicolon,          Consumer_Mute,         Consumer_VolumeDecrement, Consumer_VolumeIncrement, ___,             Key_Backslash,    Key_Pipe,
 
    ___, ___, Key_Enter, ___,
@@ -723,12 +723,14 @@ void setup() {
   //ColormapEffect.max_layers(5);
   //ColormapEffect.activate();
 
-  MouseKeys.speed = 15;
+  MouseKeys.speed = 10;
   MouseKeys.speedDelay = 1;
+  MouseKeys.accelDelay = 30;
+  MouseKeys.accelSpeed = 1; 
 
 }
 
-/** loop is the second of the standard Arduino sketch functions.
+/** Loop is the second of the standard Arduino sketch functions.
   * As you might expect, it runs in a loop, never exiting.
   *
   * For Kaleidoscope-based keyboard firmware, you usually just want to
