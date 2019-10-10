@@ -163,7 +163,7 @@ KEYMAPS(
    Key_LeftShift,   Key_A, Key_S, Key_D, Key_F, Key_G,
    Key_LeftGui, Key_Z, Key_X, Key_C, Key_V, Key_B, Key_LeftBracket,
    
-   Key_LeftControl, Key_Backspace, Key_LeftAlt, Key_LeftShift,
+   Key_LeftControl, Key_Backspace,  Key_LeftShift, Key_LeftAlt,
    ShiftToLayer(FUNCTION),
 
    LSHIFT(Key_0),  Key_6, Key_7, Key_8,     Key_9,         Key_0,         Key_Quote,
@@ -171,7 +171,7 @@ KEYMAPS(
                   Key_H, Key_J, Key_K,     Key_L,         M(L_OE),       M(L_AE),
    Key_RightBracket,  Key_N, Key_M, Key_Comma, Key_Period,    Key_Slash,     Key_Minus,
    
-   Key_RightShift, Key_LeftAlt, Key_Spacebar, Key_LeftControl,
+   Key_LeftAlt, Key_RightShift, Key_Spacebar, Key_LeftControl,
    ShiftToLayer(FUNCTION)),
 
 
