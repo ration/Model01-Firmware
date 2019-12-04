@@ -12,7 +12,6 @@
  * as well as the Kaleidoscope plugins we use in the Model 01's firmware
  */
 
-
 // The Kaleidoscope core
 #include "Kaleidoscope.h"
 
@@ -77,9 +76,12 @@
 // Multiple Keycodes with single key
 #include <Kaleidoscope-Qukeys.h>
 
-// Oneshot modifiers (press Ctrl, a results in Ctrl+a)
-#include <Kaleidoscope-OneShot.h>
+#include <Kaleidoscope-SpaceCadet.h>
 
+// Oneshot modifiers (press Ctrl, a results in Ctrl+a)
+//#include <Kaleidoscope-OneShot.h>
+
+//#include <Kaleidoscope-TapDance.h>
 
 /** This 'enum' is a list of all the macros used by the Model 01's firmware
   * The names aren't particularly important. What is important is that each
@@ -94,7 +96,7 @@
   * a macro key is pressed.
   */
 
-enum { MACRO_VERSION_INFO, MACRO_ANY, L_AE, L_OE,
+enum { MACRO_VERSION_INFO, MACRO_ANY, L_AE, L_OE, L_MX, L_GT, L_LT,
 MACRO_FCUP, MACRO_FCDOWN};
 
 
@@ -171,11 +173,11 @@ KEYMAPS(
                   Key_H, Key_J, Key_K,     Key_L,         M(L_OE),       M(L_AE),
    Key_RightBracket,  Key_N, Key_M, Key_Comma, Key_Period,    Key_Slash,     Key_Minus,
    
-   Key_LeftAlt, Key_RightShift, Key_Spacebar, Key_LeftControl,
+   Key_RightAlt, Key_RightShift, Key_Spacebar, Key_LeftControl,
    ShiftToLayer(FUNCTION)),
 
 
-  [NUMPAD] =  KEYMAP_STACKED
+    [NUMPAD] =  KEYMAP_STACKED
   (___, ___, ___, ___, ___, ___, ___,
    ___, ___, ___, ___, ___, ___, ___,
    ___, ___, ___, ___, ___, ___,
@@ -267,6 +269,15 @@ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
   case L_OE:
     compose2(Key_Quote, true, Key_O, true, keyState);
     break;
+  case L_MX:
+    invokeMx();
+    break;
+  case L_GT:
+    shift(Key_Period, keyState);
+    break;
+  case L_LT:
+    shift(Key_Comma, keyState);
+    break;
   case MACRO_VERSION_INFO:
     versionInfoMacro(keyState);
     break;
@@ -280,10 +291,29 @@ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
   case MACRO_FCDOWN:
     FunctionalColor::brightnessDown(keyState);
     break;
+
   }
   return MACRO_NONE;
 }
 
+/* Press alt-x to invoke emacs execute-command */
+static void invokeMx() {
+  press(Key_LeftAlt);
+  tap(Key_X);
+  release(Key_LeftAlt);
+}
+
+static void shift(Key key, uint8_t keyState) {
+  if (!keyToggledOn(keyState)) {
+    return;
+  }
+  bool shifted = kaleidoscope::hid::wasModifierKeyActive(Key_LeftShift)
+    || kaleidoscope::hid::wasModifierKeyActive(Key_RightShift);
+  if (!shifted) press(Key_LeftShift);
+  tap(key);
+  if (!shifted) release(Key_LeftShift);   
+ }
+ 
 /** Print Finnish ä and ö with compose */
 static void compose2(Key key1, bool shift1, Key key2, bool shift2, uint8_t keyState) {
   if (!keyToggledOn(keyState)) {
@@ -540,6 +570,18 @@ static void lockFunction(uint8_t combo_index) {
     Layer.deactivate(FUNCTION);
   }
 }
+/*
+void tapDanceAction(uint8_t tap_dance_index, byte row, byte col, uint8_t tap_count,
+                    kaleidoscope::plugin::TapDance::ActionType tap_dance_action) {
+  switch (tap_dance_index) {
+  case 0:
+    return tapDanceActionKeys(tap_count, tap_dance_action,
+                              ShiftToLayer(FUNCTION), LockLayer(FUNCTION));
+  case 1:
+    return tapDanceActionKeys(tap_count, tap_dance_action,
+			      Key_LeftAlt, M(M_X));
+  }
+  }*/
 
 /** Magic combo list, a list of key combo and action pairs the firmware should
  * recognise.
@@ -661,9 +703,11 @@ KALEIDOSCOPE_INIT_PLUGINS(
   // by BIOSes) and Report (NKRO).
   USBQuirks, 
 
-  OneShot, 
-  
+  //  OneShot, 
+  SpaceCadet,
   Qukeys
+
+  //TapDance
 
 );
 
@@ -675,6 +719,20 @@ void setup() {
   // First, call Kaleidoscope's internal setup function
   Kaleidoscope.setup();
 
+  static kaleidoscope::plugin::SpaceCadet::KeyBinding spacecadetmap[] = {
+									 {Key_LeftShift, Key_LeftCurlyBracket, 250}
+									 , {Key_RightShift, Key_RightCurlyBracket, 250}
+    //    , {Key_LeftGui, Key_LeftCurlyBracket, 250}
+									     ,     {Key_LeftControl, M(L_MX), 250}
+    , {Key_RightAlt, M(L_GT), 250}
+    , {Key_LeftAlt, M(L_LT), 250}
+    //    , {Key_LeftControl, Key_LeftBracket, 250}
+    //, {Key_RightControl, Key_RightBracket, 250}
+    , SPACECADET_MAP_END
+  };  
+
+  SpaceCadet.map = spacecadetmap;
+  
   // While we hope to improve this in the future, the NumPad plugin
   // needs to be explicitly told which keymap layer is your numpad layer
   //NumPad.numPadLayer = NUMPAD;
