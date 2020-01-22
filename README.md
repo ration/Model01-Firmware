@@ -3,42 +3,37 @@
 Modified firmware for the Keyboardio Model 01
 https://github.com/keyboardio/Model01-Firmware
 
-TODO Layout
+![layout image](layout.png "Layout")
 
-## Goal
+# Description 
 
-Make a layout that is great for programming, for someone who is used to using a standard keyboard, with arrow keys.
-Mostly Finnish (or Swedish) layout with moved commonly used Programming characters
+Finnish layout with optimizations for programmers. 
 
-## TODO 
-- [ ] Finnish layout with modified programming character locations
-- [ ] Remap arrows to inverted T (IJKL)
-- [ ] Remap mouse to inverted T (ESDF)
-- [ ] Enable one shot modifiers (not sticky) (https://github.com/keyboardio/Kaleidoscope-OneShot)
-- [ ] Emacs usage additions  
+Features:
 
-## Requirements
-- https://github.com/jdlien/Kaleidoscope-LEDEffect-FunctionalColor (no?)
-- https://github.com/bjc/Kaleidoscope-LayerHighlighter
+* Basic Finnish layout for typing (excluding å which is under a modifier)
+* SpaceCadet overloads for all modifiers 
+* M-x in a key
 
-## Limitations
+# Requirements
+
+* https://github.com/jdlien/Kaleidoscope-LEDEffect-FunctionalColor (no?)
+* Right alt set as the compose key. 
+* If you have ever used Chrysalis, make sure *use custom layers only is disabled* in Keyboard Settings.
+
+## TODOS
+
+* Remove the reduncancy in the layout, maybe reconsider the led and any key usage, they might be too far away.
 
 
 # Download and install
 
-Follow [Kelidoscope Wiki](https://github.com/keyboardio/Kaleidoscope/wiki) installation instructions
+Follow [Kelidoscope Wiki](https://github.com/keyboardio/Kaleidoscope/wiki) installation instructions.
 
 
 # Build and flash the firmware
 
-Before you begin, make sure your Model 01 is connected to your computer.
-
-```sh
-cd Model01-Firmware
-make flash
-```
-
-When the builder tells you to hit Enter to continue, hold down "Prog" in the top left corner of your keyboard and hit Enter.
+Follow the [Kaleidoscope Arduino Instructions](https://github.com/keyboardio/Kaleidoscope/wiki/Install-Arduino).
 
 # Link
 

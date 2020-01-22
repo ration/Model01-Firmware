@@ -96,7 +96,7 @@
   * a macro key is pressed.
   */
 
-enum { MACRO_VERSION_INFO, MACRO_ANY, L_AE, L_OE, L_MX, L_GT, L_LT, L_SHIFTCOLON,
+enum { MACRO_VERSION_INFO, MACRO_ANY, L_AE, L_OE, L_AO, L_MX, L_GT, L_LT, L_SHIFTCOLON,
 MACRO_FCUP, MACRO_FCDOWN};
 
 
@@ -173,7 +173,7 @@ KEYMAPS(
                   Key_H, Key_J, Key_K,     Key_L,         M(L_OE),       M(L_AE),
    Key_RightBracket,  Key_N, Key_M, Key_Comma, Key_Period,    Key_Slash,     Key_Minus,
    
-   Key_RightAlt, Key_RightShift, Key_Spacebar, Key_RightControl,
+   Key_LeftAlt, Key_RightShift, Key_Spacebar, Key_RightControl,
    ShiftToLayer(FUNCTION)),
 
 
@@ -202,9 +202,9 @@ KEYMAPS(
    ___,
 
    Consumer_PlaySlashPause, Key_F6,                 Key_F7,          Key_F8,                   Key_F9,          Key_F10,          Key_F11,
-   ___,    ___,            Key_PageUp,              Key_UpArrow,              ___,             ___,              Key_F12,
+   ___,    ___,            Key_PageUp,              Key_UpArrow,              ___,             M(L_AO),              Key_F12,
            ___,          Key_LeftArrow,    Key_DownArrow,            Key_RightArrow,  ___,              ___,
-   Key_Semicolon,          Key_PageDown,         Consumer_VolumeDecrement, Consumer_VolumeIncrement, ___,             Key_Backslash,    Key_Pipe,
+   Key_Semicolon,          ___, Key_PageDown,         Consumer_VolumeDecrement, Consumer_VolumeIncrement,             Key_Backslash,    Key_Pipe,
 
    ___, Key_Quote, Key_Enter, ___,
    ___)
@@ -269,6 +269,9 @@ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
   case L_OE:
     compose2(Key_Quote, true, Key_O, true, keyState);
     break;
+  case L_AO: // TODO doesn't work?
+    compose2(Key_O, false, Key_A, false, keyState);
+    break;
   case L_MX:
     invokeMx();
     break;
@@ -320,8 +323,8 @@ static void shift(Key key, uint8_t keyState) {
 /** Print Finnish ä and ö with compose */
 static void compose2(Key key1, bool shift1, Key key2, bool shift2, uint8_t keyState) {
   if (!keyToggledOn(keyState)) {
-    return;
- }
+      return;
+  }
     bool shifted = kaleidoscope::hid::wasModifierKeyActive(Key_LeftShift)
   || kaleidoscope::hid::wasModifierKeyActive(Key_RightShift);
 
