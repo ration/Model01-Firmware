@@ -3,7 +3,7 @@
 Modified firmware for the Keyboardio Model 01
 https://github.com/keyboardio/Model01-Firmware
 
-![layout image](layout.png "Layout")
+![layout image](layout.png)
 
 # Description 
 
