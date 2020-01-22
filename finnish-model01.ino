@@ -96,7 +96,7 @@
   * a macro key is pressed.
   */
 
-enum { MACRO_VERSION_INFO, MACRO_ANY, L_AE, L_OE, L_MX, L_GT, L_LT,
+enum { MACRO_VERSION_INFO, MACRO_ANY, L_AE, L_OE, L_MX, L_GT, L_LT, L_SHIFTCOLON,
 MACRO_FCUP, MACRO_FCDOWN};
 
 
@@ -164,7 +164,7 @@ KEYMAPS(
    Key_Backtick, Key_Q, Key_W, Key_E, Key_R, Key_T, Key_Tab,
    Key_LeftShift,   Key_A, Key_S, Key_D, Key_F, Key_G,
    Key_LeftGui, Key_Z, Key_X, Key_C, Key_V, Key_B, Key_LeftBracket,
-   
+      
    Key_LeftControl, Key_Backspace,  Key_LeftShift, Key_LeftAlt,
    ShiftToLayer(FUNCTION),
 
@@ -173,7 +173,7 @@ KEYMAPS(
                   Key_H, Key_J, Key_K,     Key_L,         M(L_OE),       M(L_AE),
    Key_RightBracket,  Key_N, Key_M, Key_Comma, Key_Period,    Key_Slash,     Key_Minus,
    
-   Key_RightAlt, Key_RightShift, Key_Spacebar, Key_LeftControl,
+   Key_RightAlt, Key_RightShift, Key_Spacebar, Key_RightControl,
    ShiftToLayer(FUNCTION)),
 
 
@@ -202,11 +202,11 @@ KEYMAPS(
    ___,
 
    Consumer_PlaySlashPause, Key_F6,                 Key_F7,          Key_F8,                   Key_F9,          Key_F10,          Key_F11,
-   ___,    Key_PageUp,            ___,              Key_UpArrow,              ___,             ___,              Key_F12,
-           Key_PageDown,          Key_LeftArrow,    Key_DownArrow,            Key_RightArrow,  ___,              ___,
-   Key_Semicolon,          Consumer_Mute,         Consumer_VolumeDecrement, Consumer_VolumeIncrement, ___,             Key_Backslash,    Key_Pipe,
+   ___,    ___,            Key_PageUp,              Key_UpArrow,              ___,             ___,              Key_F12,
+           ___,          Key_LeftArrow,    Key_DownArrow,            Key_RightArrow,  ___,              ___,
+   Key_Semicolon,          Key_PageDown,         Consumer_VolumeDecrement, Consumer_VolumeIncrement, ___,             Key_Backslash,    Key_Pipe,
 
-   ___, ___, Key_Enter, ___,
+   ___, Key_Quote, Key_Enter, ___,
    ___)
 )
 
@@ -272,6 +272,9 @@ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
   case L_MX:
     invokeMx();
     break;
+  case L_SHIFTCOLON:
+    shift(Key_Semicolon, keyState);
+    break;
   case L_GT:
     shift(Key_Period, keyState);
     break;
@@ -296,7 +299,7 @@ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
   return MACRO_NONE;
 }
 
-/* Press alt-x to invoke emacs execute-command */
+/* Press alt-x to invoke emacs execute-command (or something like intellij search everywhere if bound to it) */
 static void invokeMx() {
   press(Key_LeftAlt);
   tap(Key_X);
@@ -718,20 +721,20 @@ KALEIDOSCOPE_INIT_PLUGINS(
 void setup() {
   // First, call Kaleidoscope's internal setup function
   Kaleidoscope.setup();
-
+  int trigger_time = 250;
   static kaleidoscope::plugin::SpaceCadet::KeyBinding spacecadetmap[] = {
-									 {Key_LeftShift, Key_LeftCurlyBracket, 250}
-									 , {Key_RightShift, Key_RightCurlyBracket, 250}
-    //    , {Key_LeftGui, Key_LeftCurlyBracket, 250}
-									     ,     {Key_LeftControl, M(L_MX), 250}
-    , {Key_RightAlt, M(L_GT), 250}
-    , {Key_LeftAlt, M(L_LT), 250}
-    //    , {Key_LeftControl, Key_LeftBracket, 250}
-    //, {Key_RightControl, Key_RightBracket, 250}
+									 {Key_LeftShift, Key_LeftCurlyBracket, trigger_time}
+									 , {Key_RightShift, Key_RightCurlyBracket, trigger_time}
+    //    , {Key_LeftGui, Key_LeftCurlyBracket, trigger_time}
+									     ,     {Key_RightControl, M(L_MX), trigger_time}
+    , {Key_RightAlt, M(L_GT), trigger_time}
+    , {Key_LeftAlt, M(L_LT), trigger_time}
+									 , {Key_LeftControl, M(L_SHIFTCOLON), trigger_time}
+    //    , {Key_LeftControl, Key_LeftBracket, trigger_time}
+    //, {Key_RightControl, Key_RightBracket, trigger_time}
     , SPACECADET_MAP_END
-  };  
-
-  SpaceCadet.map = spacecadetmap;
+    };
+    SpaceCadet.map = spacecadetmap;
   
   // While we hope to improve this in the future, the NumPad plugin
   // needs to be explicitly told which keymap layer is your numpad layer
