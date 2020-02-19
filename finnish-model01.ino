@@ -730,8 +730,8 @@ void setup() {
 									 , {Key_RightShift, Key_RightCurlyBracket, trigger_time}
     //    , {Key_LeftGui, Key_LeftCurlyBracket, trigger_time}
 									     ,     {Key_RightControl, M(L_MX), trigger_time}
-    , {Key_RightAlt, M(L_GT), trigger_time}
-    , {Key_LeftAlt, M(L_LT), trigger_time}
+									 //    , {Key_RightAlt, M(L_GT), trigger_time}
+									 //									 , {Key_LeftAlt, M(L_LT), trigger_time} // This doesn't work right now as it's not mapped. It conflicts with the compose key
 									 , {Key_LeftControl, M(L_SHIFTCOLON), trigger_time}
     //    , {Key_LeftControl, Key_LeftBracket, trigger_time}
     //, {Key_RightControl, Key_RightBracket, trigger_time}
